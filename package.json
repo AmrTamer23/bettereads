@@ -2,10 +2,16 @@
   "name": "books-repo",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "dev": "run ./index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "prisma": "^5.17.0"
   }
 }
