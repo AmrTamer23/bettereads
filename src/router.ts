@@ -2,31 +2,32 @@ import { Router } from "express";
 import { body, validationResult } from "express-validator";
 import db from "./modules/db";
 import { atLeastOneProp, interceptErroredRequest } from "./modules/middleware";
+import {
+  createBook,
+  deleteBook,
+  getAllBooks,
+  getBookById,
+  updateBook,
+} from "./handlers/books";
 
 const router = Router();
 
 // Books
 
-router.get("/books", () => {});
+router.get("/books", getAllBooks);
 
-router.get("/books/:id", () => {});
+router.get("/books/:id", getBookById);
 
 router.post(
   "/books",
   body(["title", "author", "numOfPages", "bookCover"]).isString(),
   interceptErroredRequest,
-  (req, res) => {
-    // TODO:Create book
-    return res.json({ message: "Book created" });
-  }
+  createBook
 );
 
-router.put("/books/:id", atLeastOneProp, (req, res) => {
-  // TODO:Update book
-  return res.json({ message: "Book updated" });
-});
+router.put("/books/:id", atLeastOneProp, updateBook);
 
-router.delete("/books/:id", () => {});
+router.delete("/books/:id", deleteBook);
 
 // User Book
 
