@@ -36,6 +36,7 @@ type UserBook = {
   updatedAt: Date;
   user: User;
   book: Book;
+  progress?: number;
 };
 
 enum ReadStatus {
@@ -43,4 +44,10 @@ enum ReadStatus {
   TO_READ = "TO_READ",
   READING = "READING",
   READ = "READ",
+}
+
+declare namespace Express {
+  export interface Request {
+    user?: User;
+  }
 }

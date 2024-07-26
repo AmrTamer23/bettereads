@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { body, validationResult } from "express-validator";
-import db from "./modules/db";
+import { body } from "express-validator";
 import { atLeastOneProp, interceptErroredRequest } from "./modules/middleware";
 import {
   createBook,
@@ -8,7 +7,14 @@ import {
   getAllBooks,
   getBookById,
   updateBook,
-} from "./handlers/books";
+} from "./handlers/book";
+import {
+  createUserBook,
+  deleteUserBook,
+  getAllUserBooks,
+  getUserBookById,
+  updateUserBook,
+} from "./handlers/user-book";
 
 const router = Router();
 
@@ -31,22 +37,19 @@ router.delete("/books/:id", deleteBook);
 
 // User Book
 
-router.get("/userbooks", () => {});
+router.get("/userbooks", getAllUserBooks);
 
-router.get("/userbooks/:id", () => {});
+router.get("/userbooks/:id", getUserBookById);
 
 router.post(
   "/userbooks",
   body(["bookId", "userId", "status"]).isString(),
   interceptErroredRequest,
-  (req, res) => {
-    //TODO: Create user book
-    return res.json({ message: "User book created" });
-  }
+  createUserBook
 );
 
-router.put("/userbooks/:id", atLeastOneProp, () => {});
+router.put("/userbooks/:id", atLeastOneProp, updateUserBook);
 
-router.delete("/userbooks/:id", () => {});
+router.delete("/userbooks/:id", deleteUserBook);
 
 export default router;
