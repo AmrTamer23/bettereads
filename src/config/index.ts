@@ -18,7 +18,7 @@ export default merge(
   {
     stage,
     env: process.env.NODE_ENV,
-    port: 6109,
+    port: 3000,
     secerts: {
       jwt: process.env.JWT_SECRET,
       db_url: process.env.DATABASE_URL,

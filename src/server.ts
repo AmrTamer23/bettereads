@@ -3,6 +3,7 @@ import router from "./router";
 import morgan from "morgan";
 import { protect } from "./modules/auth";
 import { createNewUser, signIn } from "./handlers/user";
+import config from "./config";
 
 const app = express();
 
@@ -14,7 +15,12 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/api", protect, router);
+app.use(
+  "/api",
+  (req, res, next) =>
+    config.stage !== "tst" ? protect(req, res, next) : next(),
+  router
+);
 app.post("/login", signIn);
 app.post("/register", createNewUser);
 
