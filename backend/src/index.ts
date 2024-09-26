@@ -1,8 +1,21 @@
-import config from "./config";
-import app from "./server";
-import * as dotenv from "dotenv";
-dotenv.config();
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+import routes from "./routes";
+// Use the imported routes
 
-app.listen(config, () => {
-  console.log("Server is running on http://localhost:3000");
+export const app = new Hono();
+
+app.get("/", (c) => {
+  return c.text("Hello Hono!!!!!@@");
+});
+
+app.route("/", routes);
+
+const port = 3005;
+console.log(`Server is running on port ${port}`);
+
+serve({
+  fetch: app.fetch,
+
+  port,
 });
