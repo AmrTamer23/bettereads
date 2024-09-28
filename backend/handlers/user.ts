@@ -5,18 +5,32 @@ import db from "../modules/db";
 
 export const createNewUser = async (c: Context) => {
   const body = await c.req.json();
-  const user = await db.user.create({
-    data: {
-      userName: body.userName,
-      password: await hashPassword(body.password),
-      email: body.email,
-      avatar: body.avatar,
-    },
-  });
+  const { userName, password, email, avatar } = body;
+  try {
+    const existingUser = await db.user.findUnique({
+      where: { userName },
+    });
 
-  const token = createJWT(user as User);
+    if (existingUser) {
+      return c.json({ error: "Username already exists" }, 400);
+    }
 
-  return c.json({ token });
+    const user = await db.user.create({
+      data: {
+        userName: userName,
+        password: await hashPassword(password),
+        email: email,
+        avatar: avatar,
+      },
+    });
+
+    const token = createJWT(user as User);
+
+    return c.json({ token });
+  } catch (error) {
+    console.log(error);
+    return c.json({ message: "Something went wrong" }, 500);
+  }
 };
 
 export const signIn = async (c: Context) => {

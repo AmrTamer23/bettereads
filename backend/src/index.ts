@@ -1,21 +1,20 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import routes from "./routes";
-// Use the imported routes
+import protectedRoutes from "./protected-routes";
+import publicRoutes from "./public-routes";
+import { protect } from "../modules/auth";
 
 export const app = new Hono();
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!!!!!@@");
-});
+app.route("/auth", publicRoutes);
 
-app.route("/", routes);
+app.use("/*", protect);
+app.route("/", protectedRoutes);
 
 const port = 3005;
 console.log(`Server is running on port ${port}`);
 
 serve({
   fetch: app.fetch,
-
   port,
 });

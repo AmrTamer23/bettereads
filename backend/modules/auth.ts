@@ -1,7 +1,20 @@
 import jwt from "jsonwebtoken";
-import { type Request, type Response, type NextFunction } from "express";
 import bcrypt from "bcrypt";
+import { type Context } from "hono";
+import { User } from "../../types";
+import { sign, verify } from "jsonwebtoken";
+import { config } from "dotenv";
 
+config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  console.error("JWT_SECRET is not set in the environment variables");
+  process.exit(1);
+}
+
+// Comparing passwords using bcrypt
 export const comparePasswords = async (
   password: string,
   hashedPassword: string
@@ -9,10 +22,12 @@ export const comparePasswords = async (
   return bcrypt.compare(password, hashedPassword);
 };
 
+// Hashing password
 export const hashPassword = async (password: string) => {
   return await bcrypt.hash(password, 5);
 };
 
+// Creating JWT
 export const createJWT = (user: User) => {
   const token = jwt.sign(
     { id: user.id, username: user.userName },
@@ -21,30 +36,26 @@ export const createJWT = (user: User) => {
   return token;
 };
 
-export const protect = (
-  req: Request & { user?: User },
-  res: Response,
-  next: NextFunction
-) => {
-  const bearer = req?.headers?.["authorization"] || "";
+// Protect middleware for Hono
+export const protect = async (c: Context, next: Function) => {
+  const bearer = c.req.header("authorization");
+
   if (!bearer || !bearer.startsWith("Bearer ")) {
-    res.status(401).send("Unauthorized");
-    return;
+    return c.text("Unauthorized", 401);
   }
 
-  const [, token] = bearer.split(" ");
+  const token = bearer.split(" ")[1];
 
   if (!token) {
-    res.status(401).send("Unauthorized");
-    return;
+    return c.text("Unauthorized", 401);
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as User;
-    req.user = decoded;
-    next();
+    // Attach user information to context for access in routes
+    c.set("user", decoded);
+    await next();
   } catch (error) {
-    res.status(401).send("Unauthorized");
-    return;
+    return c.text("Unauthorized", 401);
   }
 };
