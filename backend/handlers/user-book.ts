@@ -1,21 +1,24 @@
+import { Hono } from "hono";
 import db from "../modules/db";
-import { type Request, type Response } from "express";
+import { type Context } from "hono";
 
-export const getAllUserBooks = async (req: Request, res: Response) => {
+const app = new Hono();
+
+export const getAllUserBooks = async (c: Context) => {
   const data = await db.userBook.findMany({
     where: {
-      userId: req.user?.id,
+      userId: c.get("user")?.id,
     },
     include: {
       book: true,
     },
   });
 
-  res.json({ data });
+  return c.json({ data });
 };
 
-export const getUserBookById = async (req: Request, res: Response) => {
-  const id = req.params.id;
+export const getUserBookById = async (c: Context) => {
+  const id = c.req.param("id");
 
   const data = await db.userBook.findUnique({
     where: {
@@ -27,31 +30,30 @@ export const getUserBookById = async (req: Request, res: Response) => {
   });
 
   if (!data) {
-    return res.status(404).json({ message: "User book not found" });
+    return c.json({ message: "User book not found" }, 404);
   }
 
-  res.json({ data });
+  return c.json({ data });
 };
 
-export const createUserBook = async (req: Request, res: Response) => {
-  const body = req.body as UserBook;
+export const createUserBook = async (c: Context) => {
+  const body = await c.req.json();
   if (!body.bookId || !body.status) {
-    return res.status(400).json({ message: "Missing required fields" });
+    return c.json({ message: "Missing required fields" }, 400);
   }
   const data = await db.userBook.create({
     data: {
       bookId: body.bookId,
-      userId: req.user?.id!,
+      userId: c.get("user")?.id!,
       status: body.status,
     },
   });
 
-  res.status(201);
-  res.json({ data });
+  return c.json({ data }, 201);
 };
 
-export const updateUserBook = async (req: Request, res: Response) => {
-  const body = req.body as UserBook;
+export const updateUserBook = async (c: Context) => {
+  const body = await c.req.json();
 
   const data = await db.userBook.update({
     where: {
@@ -67,11 +69,11 @@ export const updateUserBook = async (req: Request, res: Response) => {
     },
   });
 
-  res.json({ data });
+  return c.json({ data });
 };
 
-export const deleteUserBook = async (req: Request, res: Response) => {
-  const id = req.params.id;
+export const deleteUserBook = async (c: Context) => {
+  const id = c.req.param("id");
 
   const data = await db.userBook.delete({
     where: {
@@ -79,5 +81,5 @@ export const deleteUserBook = async (req: Request, res: Response) => {
     },
   });
 
-  res.json({ data });
+  return c.json({ data });
 };

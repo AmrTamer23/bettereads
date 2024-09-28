@@ -39,7 +39,7 @@ type UserBook = {
   progress?: number;
 };
 
-enum ReadStatus {
+export enum ReadStatus {
   TO_BUY = "TO_BUY",
   TO_READ = "TO_READ",
   READING = "READING",
