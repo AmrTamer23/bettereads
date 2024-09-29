@@ -16,6 +16,7 @@ model User {
   email     String     @unique
   avatar    String
   books     UserBook[]
+  admin     Boolean    @default(false)
 }
 
 model Book {
@@ -31,6 +32,7 @@ model Book {
   genre         String?
   publishedDate DateTime?
   users         UserBook[]
+  approved      Boolean    @default(false)
 }
 
 model UserBook {

@@ -1,17 +1,25 @@
 import { type Context } from "hono";
 import db from "../modules/db";
+import { User } from "../../types";
 
 export const getAllBooks = async (c: Context) => {
-  const data = await db.book.findMany();
+  const user = c.get("user") as User;
+  const data = await db.book.findMany({
+    where: {
+      approved: user.admin ? undefined : true,
+    },
+  });
   return c.json({ data });
 };
 
 export const getBookById = async (c: Context) => {
   const id = c.req.param("id");
+  const user = c.get("user") as User;
 
   const data = await db.book.findUnique({
     where: {
       id,
+      approved: user.admin ? undefined : true,
     },
   });
 
