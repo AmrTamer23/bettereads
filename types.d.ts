@@ -46,9 +46,3 @@ export enum ReadStatus {
   READING = "READING",
   READ = "READ",
 }
-
-declare namespace Express {
-  export interface Request {
-    user?: User;
-  }
-}

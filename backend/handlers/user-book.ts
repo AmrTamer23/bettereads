@@ -1,8 +1,5 @@
-import { Hono } from "hono";
 import db from "../modules/db";
 import { type Context } from "hono";
-
-const app = new Hono();
 
 export const getAllUserBooks = async (c: Context) => {
   const data = await db.userBook.findMany({
