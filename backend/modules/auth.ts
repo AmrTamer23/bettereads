@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { type Context } from "hono";
 import { User } from "../../types";
-import { sign, verify } from "jsonwebtoken";
 import { config } from "dotenv";
 
 config();
@@ -31,7 +30,8 @@ export const hashPassword = async (password: string) => {
 export const createJWT = (user: User) => {
   const token = jwt.sign(
     { id: user.id, username: user.userName },
-    process.env.JWT_SECRET!
+    process.env.JWT_SECRET!,
+    { expiresIn: "4h" }
   );
   return token;
 };
