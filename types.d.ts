@@ -6,6 +6,7 @@ type User = {
   email: string;
   avatar: string;
   books: UserBook[];
+  admin: boolean;
 };
 
 type Book = {
