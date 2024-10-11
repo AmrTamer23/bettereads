@@ -5,8 +5,17 @@ import publicRoutes from "./public-routes";
 import adminRoutes from "./admin-routes";
 import { protect } from "../middleware/auth";
 import { protectAdmin } from "../middleware/authorize";
+import { cors } from "hono/cors";
 
 export const app = new Hono();
+
+app.use(
+  "/*",
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 app.route("/auth", publicRoutes);
 

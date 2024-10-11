@@ -53,5 +53,27 @@ export const signIn = async (c: Context) => {
 
   const token = createJWT(user as User);
 
-  return c.json({ token });
+  c.header(
+    "Set-Cookie",
+    `auth-token=${token}; ` +
+      "HttpOnly; " +
+      "Path=/; " +
+      "SameSite=Strict; " +
+      // In production, add: Secure;
+      "Max-Age=86400"
+  );
+
+  return c.json({
+    user: {
+      id: user.id,
+      username: user.userName,
+      isAdmin: user.admin,
+    },
+  });
+};
+
+export const signOut = async (c: Context) => {
+  c.header("Set-Cookie", "Path=/; Max-Age=0; HttpOnly; SameSite=Strict");
+
+  return c.json({ success: true });
 };
