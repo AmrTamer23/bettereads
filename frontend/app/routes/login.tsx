@@ -5,10 +5,10 @@ export const Route = createFileRoute("/login")({
   ssr: false,
 });
 
-import { Button } from "../../components/ui/button";
-import { Checkbox } from "../../components/ui/checkbox";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+import { Button } from "~/components/ui/button";
+import { Checkbox } from "~/components/ui/checkbox";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import { Facebook } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -19,8 +19,8 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from "../../components/ui/form";
-import { login } from "../../lib/api/auth";
+} from "~/components/ui/form";
+import { login } from "~/lib/api/auth";
 
 const formSchema = z.object({
   email: z.string().email(),
