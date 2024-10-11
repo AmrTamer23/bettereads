@@ -1,20 +1,32 @@
-import { instance } from "../../lib/instance";
+import { instance } from "~/lib/instance";
 
-export async function login(email: string, password: string) {
+type SuccessResponse = {
+  user: {
+    id: string;
+    username: string;
+    isAdmin: boolean;
+  };
+};
+
+type ErrorResponse = {
+  message: string;
+};
+
+export async function login(
+  email: string,
+  password: string
+): Promise<SuccessResponse | ErrorResponse> {
   const res = await instance
-    .post<{
-      token: string;
-    }>("/auth/signin", {
+    .post<SuccessResponse>("/auth/signin", {
       email,
       password,
     })
     .then((res) => {
       return res.data;
+    })
+    .catch((error) => {
+      return { message: error.response?.data?.message || "An error occurred" };
     });
-
-  if (typeof window !== "undefined") {
-    localStorage.setItem("token", res.token);
-  }
 
   return res;
 }

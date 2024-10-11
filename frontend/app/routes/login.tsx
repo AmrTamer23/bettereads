@@ -1,10 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/login")({
-  component: () => <Login />,
-  ssr: false,
-});
-
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
@@ -21,6 +15,13 @@ import {
   FormLabel,
 } from "~/components/ui/form";
 import { login } from "~/lib/api/auth";
+import { useToast } from "~/hooks/use-toast";
+import { userAtom } from "~/stores/user";
+import { useAtom, useSetAtom } from "jotai";
+export const Route = createFileRoute("/login")({
+  component: () => <Login />,
+  ssr: false,
+});
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -30,28 +31,31 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 function Login() {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token");
+  const { toast } = useToast();
 
-    if (token) {
-      window.location.href = "/";
-    }
-  }
-
+  const setUser = useSetAtom(userAtom);
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const loggedIn = await login(values.email, values.password);
-
-    if (!loggedIn) {
-      return;
-      // TODO: handle error
+    try {
+      const res = await login(values.email, values.password);
+      console.log(res);
+      if ("user" in res) {
+        setUser(res.user);
+        window.location.href = "/home";
+      } else {
+        throw new Error("Login failed");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : String(error),
+        variant: "destructive",
+      });
     }
-    window.location.href = "/";
   }
-
   return (
     <div className="min-h-screen bg-[#F9F7F4] flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
