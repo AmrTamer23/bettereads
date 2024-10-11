@@ -73,10 +73,7 @@ export const signIn = async (c: Context) => {
 };
 
 export const signOut = async (c: Context) => {
-  c.header(
-    "Set-Cookie",
-    "auth-token=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict"
-  );
+  c.header("Set-Cookie", "Path=/; Max-Age=0; HttpOnly; SameSite=Strict");
 
   return c.json({ success: true });
 };
