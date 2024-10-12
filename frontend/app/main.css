@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: #F9F7F4;
     --foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -21,8 +21,8 @@
     --card: 0 0% 100%;
     --card-foreground: 222.2 47.4% 11.2%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: #382110;
+    --primary-foreground: #58371F;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -33,13 +33,13 @@
     --destructive: 0 100% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --ring: 215 20.2% 65.1%;
+    --ring: #382110;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 224 71% 4%;
+    --background: #F9F7F4;
     --foreground: 213 31% 91%;
 
     --muted: 223 47% 11%;

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
@@ -62,10 +62,10 @@ function Login() {
     }
   }
   return (
-    <div className="min-h-screen bg-[#F9F7F4] flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h1 className="mt-6 text-center lg:text-4xl text-3xl font-extrabold text-gray-900">
+          <h1 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Sign in to ReadRadar
           </h1>
         </div>
@@ -76,9 +76,6 @@ function Login() {
           >
             <div className="rounded-md space-y-4">
               <div>
-                <Label htmlFor="email-address" className="sr-only">
-                  Email address
-                </Label>
                 <FormField
                   control={form.control}
                   name="email"
@@ -97,9 +94,6 @@ function Login() {
                 />
               </div>
               <div>
-                <Label htmlFor="password" className="sr-only">
-                  Password
-                </Label>
                 <FormField
                   control={form.control}
                   name="password"
@@ -143,7 +137,7 @@ function Login() {
             <div>
               <Button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm lg:text-base font-medium text-white bg-[#382110] hover:bg-[#58371F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#382110]"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm lg:text-base font-medium text-white bg-primary hover:bg-primary-foreground focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
               >
                 Sign in
               </Button>
@@ -206,12 +200,12 @@ function Login() {
 
         <p className="mt-2 text-center text-sm text-gray-600 lg:text-base">
           Not a member?{" "}
-          <a
-            href="#"
+          <Link
+            to="/register"
             className="font-medium text-[#382110] hover:text-[#58371F]"
           >
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>

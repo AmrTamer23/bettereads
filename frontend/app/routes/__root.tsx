@@ -1,4 +1,3 @@
-// app/routes/__root.tsx
 import { createRootRoute } from "@tanstack/react-router";
 import { Outlet, ScrollRestoration } from "@tanstack/react-router";
 import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
@@ -44,7 +43,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <Head>
         <Meta />
       </Head>
-      <Body>
+      <Body className="bg-background">
         {children}
         <ScrollRestoration />
         <Scripts />
