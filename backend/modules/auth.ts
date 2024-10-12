@@ -25,7 +25,7 @@ export const hashPassword = async (password: string) => {
 
 export const createJWT = (user: User) => {
   const token = jwt.sign(
-    { id: user.id, username: user.userName, admin: user.admin },
+    { id: user.id, username: user.username, admin: user.admin },
     process.env.JWT_SECRET!,
     { expiresIn: "4h" }
   );

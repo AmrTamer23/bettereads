@@ -30,3 +30,24 @@ export async function login(
 
   return res;
 }
+
+export async function register(
+  username: string,
+  email: string,
+  password: string
+): Promise<SuccessResponse | ErrorResponse> {
+  const res = await instance
+    .post<SuccessResponse>("/auth/signup", {
+      username,
+      email,
+      password,
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      return { message: error.response?.data?.message || "An error occurred" };
+    });
+
+  return res;
+}

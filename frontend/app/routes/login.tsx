@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
@@ -17,7 +17,8 @@ import {
 import { login } from "~/lib/api/auth";
 import { useToast } from "~/hooks/use-toast";
 import { userAtom } from "~/stores/user";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
+import { useMutation } from "@tanstack/react-query";
 export const Route = createFileRoute("/login")({
   component: () => <Login />,
   ssr: false,
@@ -32,35 +33,54 @@ type FormData = z.infer<typeof formSchema>;
 
 function Login() {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const setUser = useSetAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
+
+  if (user?.id) {
+    navigate({
+      to: "/home",
+      replace: true,
+    });
+  }
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const res = await login(values.email, values.password);
-      console.log(res);
-      if ("user" in res) {
-        setUser(res.user);
-        window.location.href = "/home";
+  const { mutate: loginMutation, isPending } = useMutation({
+    mutationFn: async (values: FormData) => {
+      return await login(values.email, values.password);
+    },
+    onSuccess: (data) => {
+      if ("user" in data) {
+        setUser(data.user);
+        navigate({
+          to: "/home",
+          replace: true,
+        });
       } else {
         throw new Error("Login failed");
       }
-    } catch (error) {
+    },
+    onError: (error) => {
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : String(error),
         variant: "destructive",
       });
-    }
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    loginMutation(values);
   }
+
   return (
-    <div className="min-h-screen bg-[#F9F7F4] flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h1 className="mt-6 text-center lg:text-4xl text-3xl font-extrabold text-gray-900">
+          <h1 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Sign in to ReadRadar
           </h1>
         </div>
@@ -71,9 +91,6 @@ function Login() {
           >
             <div className="rounded-md space-y-4">
               <div>
-                <Label htmlFor="email-address" className="sr-only">
-                  Email address
-                </Label>
                 <FormField
                   control={form.control}
                   name="email"
@@ -92,9 +109,6 @@ function Login() {
                 />
               </div>
               <div>
-                <Label htmlFor="password" className="sr-only">
-                  Password
-                </Label>
                 <FormField
                   control={form.control}
                   name="password"
@@ -138,9 +152,13 @@ function Login() {
             <div>
               <Button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm lg:text-base font-medium text-white bg-[#382110] hover:bg-[#58371F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#382110]"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm lg:text-base font-medium text-white bg-primary hover:bg-primary-foreground focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
               >
-                Sign in
+                {isPending ? (
+                  <Loader2 className="size-8 animate-spin" />
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </div>
           </form>
@@ -201,12 +219,12 @@ function Login() {
 
         <p className="mt-2 text-center text-sm text-gray-600 lg:text-base">
           Not a member?{" "}
-          <a
-            href="#"
+          <Link
+            to="/register"
             className="font-medium text-[#382110] hover:text-[#58371F]"
           >
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>
