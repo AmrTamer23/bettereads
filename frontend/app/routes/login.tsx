@@ -18,6 +18,7 @@ import { login } from "~/lib/api/auth";
 import { useToast } from "~/hooks/use-toast";
 import { userAtom } from "~/stores/user";
 import { useAtom } from "jotai";
+import { useMutation } from "@tanstack/react-query";
 export const Route = createFileRoute("/login")({
   component: () => <Login />,
   ssr: false,
@@ -47,12 +48,13 @@ function Login() {
     resolver: zodResolver(formSchema),
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const res = await login(values.email, values.password);
-      console.log(res);
-      if ("user" in res) {
-        setUser(res.user);
+  const { mutate: loginMutation, isPending } = useMutation({
+    mutationFn: async (values: FormData) => {
+      return await login(values.email, values.password);
+    },
+    onSuccess: (data) => {
+      if ("user" in data) {
+        setUser(data.user);
         navigate({
           to: "/home",
           replace: true,
@@ -60,14 +62,20 @@ function Login() {
       } else {
         throw new Error("Login failed");
       }
-    } catch (error) {
+    },
+    onError: (error) => {
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : String(error),
         variant: "destructive",
       });
-    }
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    loginMutation(values);
   }
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -146,7 +154,7 @@ function Login() {
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm lg:text-base font-medium text-white bg-primary hover:bg-primary-foreground focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
               >
-                Sign in
+                {isPending ? "Logging in..." : "Sign in"}
               </Button>
             </div>
           </form>
