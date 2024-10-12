@@ -17,7 +17,7 @@ import {
 import { login } from "~/lib/api/auth";
 import { useToast } from "~/hooks/use-toast";
 import { userAtom } from "~/stores/user";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 export const Route = createFileRoute("/login")({
   component: () => <Login />,
   ssr: false,
@@ -33,7 +33,12 @@ type FormData = z.infer<typeof formSchema>;
 function Login() {
   const { toast } = useToast();
 
-  const setUser = useSetAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
+
+  if (user?.id) {
+    window.location.href = "/home";
+  }
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
