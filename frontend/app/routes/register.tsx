@@ -3,7 +3,7 @@ import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Facebook, Twitter } from "lucide-react";
+import { Facebook, Twitter, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,7 @@ import { register } from "~/lib/api/auth";
 import { useToast } from "~/hooks/use-toast";
 import { useAtom } from "jotai";
 import { userAtom } from "~/stores/user";
+import { useMutation } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/register")({
   component: () => <RegisterPage />,
@@ -49,16 +50,14 @@ function RegisterPage() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const res = await register(
-        values.username,
-        values.email,
-        values.password
-      );
-      console.log(res);
-      if ("user" in res) {
-        setUser(res.user);
+
+  const { mutate: registerMutation, isPending } = useMutation({
+    mutationFn: async (values: FormData) => {
+      return await register(values.username, values.email, values.password);
+    },
+    onSuccess: (data) => {
+      if ("user" in data) {
+        setUser(data.user);
         navigate({
           to: "/home",
           replace: true,
@@ -66,13 +65,18 @@ function RegisterPage() {
       } else {
         throw new Error("Register failed");
       }
-    } catch (error) {
+    },
+    onError: (error) => {
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : String(error),
         variant: "destructive",
       });
-    }
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    registerMutation(values);
   }
   return (
     <div className="min-h-screen bg-[#F9F7F4] flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -174,7 +178,11 @@ function RegisterPage() {
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#382110] hover:bg-[#58371F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#382110]"
               >
-                Sign up
+                {isPending ? (
+                  <Loader2 className="size-8 animate-spin" />
+                ) : (
+                  "Sign up"
+                )}
               </Button>
             </div>
           </form>

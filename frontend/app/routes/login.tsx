@@ -154,7 +154,11 @@ function Login() {
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm lg:text-base font-medium text-white bg-primary hover:bg-primary-foreground focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
               >
-                {isPending ? "Logging in..." : "Sign in"}
+                {isPending ? (
+                  <Loader2 className="size-8 animate-spin" />
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </div>
           </form>
