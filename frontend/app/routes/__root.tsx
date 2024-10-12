@@ -37,6 +37,10 @@ function RootComponent() {
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <Html>
+      <style>
+        @import
+        url('https://fonts.googleapis.com/css2?family=PT+Mono&display=swap');
+      </style>
       <Head>
         <Meta />
       </Head>
