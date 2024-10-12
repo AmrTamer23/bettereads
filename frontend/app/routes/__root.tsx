@@ -1,12 +1,18 @@
-import { createRootRoute } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  createRootRouteWithContext,
+} from "@tanstack/react-router";
 import { Outlet, ScrollRestoration } from "@tanstack/react-router";
 import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
 import { Toaster } from "~/components/ui/toaster";
 import * as React from "react";
 import "../main.css";
 import { Provider } from "jotai";
+import type { QueryClient } from "@tanstack/react-query";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+}>()({
   meta: () => [
     {
       charSet: "utf-8",
