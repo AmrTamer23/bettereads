@@ -14,6 +14,10 @@ import {
   FormItem,
   FormLabel,
 } from "~/components/ui/form";
+import { register } from "~/lib/api/auth";
+import { useToast } from "~/hooks/use-toast";
+import { useAtom } from "jotai";
+import { userAtom } from "~/stores/user";
 
 export const Route = createFileRoute("/register")({
   component: () => <RegisterPage />,
@@ -21,7 +25,7 @@ export const Route = createFileRoute("/register")({
 });
 
 const formSchema = z.object({
-  name: z.string().min(2).max(50),
+  username: z.string().min(2).max(50),
   email: z.string().email(),
   password: z.string().min(8),
   passwordConfirm: z.string().min(8),
@@ -30,11 +34,38 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 function RegisterPage() {
+  const { toast } = useToast();
+
+  const [user, setUser] = useAtom(userAtom);
+
+  if (user?.id) {
+    window.location.href = "/home";
+  }
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    try {
+      const res = await register(
+        values.username,
+        values.email,
+        values.password
+      );
+      console.log(res);
+      if ("user" in res) {
+        setUser(res.user);
+        window.location.href = "/home";
+      } else {
+        throw new Error("Register failed");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : String(error),
+        variant: "destructive",
+      });
+    }
   }
   return (
     <div className="min-h-screen bg-[#F9F7F4] flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -48,19 +79,22 @@ function RegisterPage() {
           </p>
         </div>
         <Form {...form}>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form
+            className="mt-8 space-y-6"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <div className="rounded-md space-y-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="sr-only">Name</FormLabel>
+                    <FormLabel className="sr-only">Username</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         className="rounded-t-md"
-                        placeholder="Name"
+                        placeholder="Username"
                       />
                     </FormControl>
                   </FormItem>

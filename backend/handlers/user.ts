@@ -5,10 +5,10 @@ import db from "../modules/db";
 
 export const createNewUser = async (c: Context) => {
   const body = await c.req.json();
-  const { userName, password, email, avatar } = body;
+  const { username, password, email } = body;
   try {
     const existingUser = await db.user.findUnique({
-      where: { userName },
+      where: { username, email },
     });
 
     if (existingUser) {
@@ -17,16 +17,33 @@ export const createNewUser = async (c: Context) => {
 
     const user = await db.user.create({
       data: {
-        userName: userName,
+        username,
         password: await hashPassword(password),
         email: email,
-        avatar: avatar,
+        avatar:
+          username.charAt(0).toUpperCase() + username.charAt(1).toUpperCase(),
       },
     });
 
     const token = createJWT(user as User);
 
-    return c.json({ token });
+    c.header(
+      "Set-Cookie",
+      `auth-token=${token}; ` +
+        "HttpOnly; " +
+        "Path=/; " +
+        "SameSite=Strict; " +
+        // TODO:In production, add: Secure;
+        "Max-Age=86400"
+    );
+
+    return c.json({
+      user: {
+        id: user.id,
+        username: user.username,
+        isAdmin: user.admin,
+      },
+    });
   } catch (error) {
     console.log(error);
     return c.json({ message: "Something went wrong" }, 500);
@@ -66,7 +83,7 @@ export const signIn = async (c: Context) => {
   return c.json({
     user: {
       id: user.id,
-      username: user.userName,
+      username: user.username,
       isAdmin: user.admin,
     },
   });

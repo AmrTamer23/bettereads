@@ -1,7 +1,7 @@
 type User = {
   id: string;
   createdAt: Date;
-  userName: string;
+  username: string;
   password: string;
   email: string;
   avatar: string;
