@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
@@ -32,11 +32,15 @@ type FormData = z.infer<typeof formSchema>;
 
 function Login() {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const [user, setUser] = useAtom(userAtom);
 
   if (user?.id) {
-    window.location.href = "/home";
+    navigate({
+      to: "/home",
+      replace: true,
+    });
   }
 
   const form = useForm<FormData>({
@@ -49,7 +53,10 @@ function Login() {
       console.log(res);
       if ("user" in res) {
         setUser(res.user);
-        window.location.href = "/home";
+        navigate({
+          to: "/home",
+          replace: true,
+        });
       } else {
         throw new Error("Login failed");
       }

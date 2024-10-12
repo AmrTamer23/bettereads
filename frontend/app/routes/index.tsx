@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Book, BookOpen, List, Star, TrendingUp } from "lucide-react";
@@ -11,9 +11,13 @@ export const Route = createFileRoute("/")({
 
 export default function LandingPage() {
   const [user] = useAtom(userAtom);
+  const navigate = useNavigate();
 
   if (user?.id) {
-    window.location.href = "/home";
+    navigate({
+      to: "/home",
+      replace: true,
+    });
   }
   return (
     <div className="flex flex-col min-h-screen">
