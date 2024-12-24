@@ -39,10 +39,10 @@
 	<title>LiteraryLink - Your Ultimate Reading Companion</title>
 </svelte:head>
 
-<main class="min-h-screen bg-gradient-to-br from-purple-600 to-blue-500 text-white">
+<main class="to-blue- min-h-screen bg-[#1A120B] text-white">
 	<nav class="container mx-auto p-4">
 		<div class="flex items-center justify-between">
-			<h1 class="text-2xl font-bold">LiteraryLink</h1>
+			<h1 class="~text-2xl/5xl font-serif font-bold text-[#E5E5CB]">BetteReads</h1>
 			<div class="space-x-4">
 				<a href="#features" class="hover:underline">Features</a>
 				<a
