@@ -4,11 +4,15 @@ import typography from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
 
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+	content: ['./src/**/*.{html,js,svelte,ts}'],
 
-  theme: {
-    extend: {}
-  },
+	theme: {
+		extend: {},
+		fontFamily: {
+			sans: ['Inter', 'sans-serif'],
+			serif: ['Playfair Display Variable', 'serif']
+		}
+	},
 
-  plugins: [typography, forms, containerQueries]
+	plugins: [typography, forms, containerQueries]
 } satisfies Config;
