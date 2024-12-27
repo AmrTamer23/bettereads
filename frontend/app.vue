@@ -2,8 +2,5 @@
 import "./main.css";
 </script>
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-  </div>
+  <NuxtPage class="bg-background min-h-screen text-foreground" />
 </template>
