@@ -1,3 +1,4 @@
+"use client";
 import { BookOpen, BookMarked, ShoppingCart } from "lucide-react";
 import CurrentlyReading from "@/components/home/currently-reading";
 import ToReadList from "@/components/home/to-read-list";
