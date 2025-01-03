@@ -12,6 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { login } from "@/lib/api/auth/login";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export function LoginForm({
   className,
@@ -20,6 +23,31 @@ export function LoginForm({
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
+
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await login(
+        payload as {
+          email: string;
+          password: string;
+        }
+      );
+      if (res.status === 200) {
+        router.push("/");
+      }
+    } catch {
+      toast({
+        title: "Error",
+        description: "An error occurred while logging in",
+      });
+    }
+  };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -30,7 +58,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
@@ -39,6 +67,7 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  name="email"
                 />
               </div>
               <div className="grid gap-2">
@@ -58,6 +87,7 @@ export function LoginForm({
                     placeholder="Password"
                     type={isVisible ? "text" : "password"}
                     required
+                    name="password"
                   />
                   <button
                     className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
