@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -19,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Search } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { searchBooks } from "@/lib/api/scraper/search-books";
 import { useQuery } from "@tanstack/react-query";
 
@@ -41,7 +40,7 @@ export default function SearchPage() {
   };
 
   const addToList = (book: BooksScrapedResult, list: string) => {
-    // In a real app, this would update the user's lists in a database
+    // TODO: Add book to list Logic
     toast({
       title: "Book added",
       description: `${book.title} has been added to your ${list} list.`,
@@ -50,35 +49,40 @@ export default function SearchPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="~text-2xl/3xl  font-bold mb-8">Search Books</h1>
-      <div className="flex gap-4 mb-8">
+      <div className="flex gap-4 mb-8 w-full max-w-2xl mx-auto">
         <Input
           type="text"
           placeholder="Search for books..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-grow"
+          className="w-full h-10 !text-lg"
         />
-        <Button onClick={onSubmit} disabled={loading}>
-          {loading ? "Searching..." : <Search className="mr-2 h-4 w-4" />}
+        <Button
+          onClick={onSubmit}
+          disabled={loading}
+          className="text-lg"
+          size="lg"
+        >
+          {loading ? "Searching..." : <SearchIcon className="mr-2 h-8 w-8" />}
           Search
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {res?.data.result.map((book) => (
-          <Card key={book.id}>
-            <CardHeader>
-              <CardTitle>{book.title}</CardTitle>
-              <CardDescription>{book.author}</CardDescription>
-            </CardHeader>
-            <CardContent>
+          <Card key={book.id} className="flex justify-between items-center">
+            <CardHeader className="flex items-center gap-2 !flex-row">
               <img
                 src={book.cover}
                 alt={book.title}
-                className="w-full h-32 object-contain mb-4"
+                className="w-fit h-28 object-contain mb-4 rounded-md"
               />
-            </CardContent>
-            <CardFooter>
+              <div className="flex gap-2 flex-col">
+                <CardTitle className="">{book.title}</CardTitle>
+                <CardDescription>{book.author}</CardDescription>
+              </div>
+            </CardHeader>
+
+            <CardFooter className="!p-0 !pr-4">
               <Select onValueChange={(value) => addToList(book, value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Add to list" />
