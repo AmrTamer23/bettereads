@@ -2,6 +2,7 @@ import { type Context } from "hono";
 import { User } from "../../types";
 import { createJWT, hashPassword, comparePasswords } from "../modules/auth";
 import db from "../modules/db";
+import { setCookie } from "hono/cookie";
 
 export const createNewUser = async (c: Context) => {
   const body = await c.req.json();
@@ -70,27 +71,27 @@ export const signIn = async (c: Context) => {
 
   const token = createJWT(user as User);
 
-  c.header(
-    "Set-Cookie",
-    `auth-token=${token}; ` +
-      "HttpOnly; " +
-      "Path=/; " +
-      "SameSite=Strict; " +
-      // In production, add: Secure;
-      "Max-Age=86400"
-  );
+  setCookie(c, "token", token, {
+    httpOnly: true,
+    path: "/",
+    sameSite: "strict",
+    maxAge: 60 * 60 * 24,
+  });
 
   return c.json({
     user: {
       id: user.id,
       username: user.username,
       isAdmin: user.admin,
+      token,
     },
   });
 };
 
 export const signOut = async (c: Context) => {
-  c.header("Set-Cookie", "Path=/; Max-Age=0; HttpOnly; SameSite=Strict");
-
+  c.header(
+    "Set-Cookie",
+    `auth-token=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict`
+  );
   return c.json({ success: true });
 };

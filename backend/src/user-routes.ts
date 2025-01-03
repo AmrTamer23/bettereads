@@ -16,12 +16,12 @@ import {
 
 const routes = new Hono();
 
-routes.get("/books", (c) => {
+routes.post("/search-books", (c) => {
   console.log("GET /books called");
   return getAllBooks(c);
 });
 routes.get("/books/:id", getBookById);
-routes.post("/books", createBook);
+// routes.post("/books", createBook);
 routes.put("/books/:id", updateBook);
 routes.delete("/books/:id", deleteBook);
 
