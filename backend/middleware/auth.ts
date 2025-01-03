@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 export const protect = async (c: Context, next: Function) => {
   console.log("Cookies:", getCookie(c));
-  const token = getCookie(c, "token");
+  const token = c.req.header("Authorization")?.split(" ")[1];
 
   if (!token) {
     return c.json({ message: "Unauthorized - No token provided" }, 401);

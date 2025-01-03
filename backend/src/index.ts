@@ -12,7 +12,7 @@ export const app = new Hono();
 app.use(
   "/*",
   cors({
-    origin: "http://localhost:3000",
+    origin: "*",
     credentials: true,
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],

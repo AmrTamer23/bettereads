@@ -83,6 +83,7 @@ export const signIn = async (c: Context) => {
       id: user.id,
       username: user.username,
       isAdmin: user.admin,
+      token,
     },
   });
 };
