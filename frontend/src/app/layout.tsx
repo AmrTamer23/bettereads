@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
 import "@fontsource/inknut-antiqua";
 import "./globals.css";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "BetterReads",
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={` antialiased`}>
-        <main>{children}</main>
+        <Providers>
+          <main>{children}</main>
+        </Providers>
         <Toaster />
       </body>
     </html>
