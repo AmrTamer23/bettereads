@@ -20,7 +20,7 @@ export function Navbar() {
       </h1>
       <nav className="*:~text-lg/xl flex gap-2 items-end *:dark:text-[#AF8F6F]">
         <Button variant="link" asChild>
-          <Link href="/">Search </Link>
+          <Link href="/search">Search </Link>
         </Button>
         <Button variant="link" asChild>
           <Link href="/">My Books</Link>
