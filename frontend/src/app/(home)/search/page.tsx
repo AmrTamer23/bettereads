@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { SearchIcon } from "lucide-react";
 import { searchBooks } from "@/lib/api/scraper/search-books";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
@@ -69,34 +70,53 @@ export default function SearchPage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {res?.data.result.map((book) => (
-          <Card key={book.id} className="flex justify-between items-center">
-            <CardHeader className="flex items-center gap-2 !flex-row">
-              <img
-                src={book.cover}
-                alt={book.title}
-                className="w-fit h-28 object-contain mb-4 rounded-md"
-              />
-              <div className="flex gap-2 flex-col">
-                <CardTitle className="">{book.title}</CardTitle>
-                <CardDescription>{book.author}</CardDescription>
-              </div>
-            </CardHeader>
-
-            <CardFooter className="!p-0 !pr-4">
-              <Select onValueChange={(value) => addToList(book, value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Add to list" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="To Buy">To Buy</SelectItem>
-                  <SelectItem value="Already Read">Already Read</SelectItem>
-                  <SelectItem value="To Read">To Read</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardFooter>
-          </Card>
+          <BookCard
+            key={book.id + "search"}
+            book={book}
+            addToList={addToList}
+          />
         ))}
       </div>
     </div>
   );
 }
+
+const BookCard = ({
+  book,
+  addToList,
+}: {
+  book: BooksScrapedResult;
+  addToList: (book: BooksScrapedResult, list: string) => void;
+}) => {
+  console.log(book.bookURL.split("/")[3]);
+  return (
+    <Link key={book.id} href={`/book/${book.bookURL.split("/")}`}>
+      <Card className="flex justify-between items-center">
+        <CardHeader className="flex items-center gap-2 !flex-row">
+          <img
+            src={book.cover}
+            alt={book.title}
+            className="w-fit h-28 object-contain mb-4 rounded-md"
+          />
+          <div className="flex gap-2 flex-col">
+            <CardTitle className="leading-normal">{book.title}</CardTitle>
+            <CardDescription>{book.author}</CardDescription>
+          </div>
+        </CardHeader>
+
+        <CardFooter className="!p-0 !pr-4">
+          <Select onValueChange={(value) => addToList(book, value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Add to list" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="To Buy">To Buy</SelectItem>
+              <SelectItem value="Already Read">Already Read</SelectItem>
+              <SelectItem value="To Read">To Read</SelectItem>
+            </SelectContent>
+          </Select>
+        </CardFooter>
+      </Card>
+    </Link>
+  );
+};

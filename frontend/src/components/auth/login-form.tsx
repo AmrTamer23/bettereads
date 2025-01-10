@@ -38,7 +38,7 @@ export function LoginForm({
           password: string;
         }
       );
-      if (res.status === 200) {
+      if (res) {
         router.push("/");
       }
     } catch {
@@ -68,6 +68,7 @@ export function LoginForm({
                   placeholder="m@example.com"
                   required
                   name="email"
+                  className="font-mono"
                 />
               </div>
               <div className="grid gap-2">
@@ -83,7 +84,7 @@ export function LoginForm({
                 <div className="relative">
                   <Input
                     id="password"
-                    className="pe-9"
+                    className="pe-9 font-mono"
                     placeholder="Password"
                     type={isVisible ? "text" : "password"}
                     required

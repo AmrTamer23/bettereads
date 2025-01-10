@@ -1,10 +1,10 @@
 import { Hono } from "hono";
 import {
-  createBook,
-  deleteBook,
+  // createBook,
+  // deleteBook,
   getAllBooks,
-  getBookById,
-  updateBook,
+  getBookByURL,
+  // updateBook,
 } from "../handlers/books";
 import {
   createUserBook,
@@ -17,13 +17,15 @@ import {
 const routes = new Hono();
 
 routes.post("/search-books", (c) => {
-  console.log("GET /books called");
   return getAllBooks(c);
 });
-routes.get("/books/:id", getBookById);
+routes.get("/books/:url", (c) => {
+  console.log("GET /books called");
+  return getBookByURL(c);
+});
 // routes.post("/books", createBook);
-routes.put("/books/:id", updateBook);
-routes.delete("/books/:id", deleteBook);
+// routes.put("/books/:id", updateBook);
+// routes.delete("/books/:id", deleteBook);
 
 routes.get("/user-books", getAllUserBooks);
 routes.get("/user-books/:id", getUserBookById);
