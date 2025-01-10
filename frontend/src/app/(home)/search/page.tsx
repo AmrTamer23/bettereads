@@ -88,9 +88,11 @@ const BookCard = ({
   book: BooksScrapedResult;
   addToList: (book: BooksScrapedResult, list: string) => void;
 }) => {
-  console.log(book.bookURL.split("/")[3]);
   return (
-    <Link key={book.id} href={`/book/${book.bookURL.split("/")}`}>
+    <Link
+      key={book.id}
+      href={`/book/${book.bookURL.split("/")[3].split("?")[0]}`}
+    >
       <Card className="flex justify-between items-center">
         <CardHeader className="flex items-center gap-2 !flex-row">
           <img
