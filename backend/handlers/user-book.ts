@@ -6,9 +6,6 @@ export const getAllUserBooks = async (c: Context) => {
     where: {
       userId: c.get("user")?.id,
     },
-    include: {
-      book: true,
-    },
   });
 
   return c.json({ data });
