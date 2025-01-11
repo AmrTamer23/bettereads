@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Sidebar } from "@/components/book/sidebar";
 import { getBookDetails } from "@/lib/api/scraper/book";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +11,8 @@ export default function ClientPage({
 }: {
   params: { url: string };
 }) {
+  const [isReadMore, setIsReadMore] = useState(false);
+
   const { data: bookData, isFetched } = useQuery({
     queryKey: ["bookDetails", url],
     queryFn: async () =>
@@ -18,13 +21,17 @@ export default function ClientPage({
       }).then((res) => res.data),
   });
 
+  const toggleReadMore = () => {
+    setIsReadMore(!isReadMore);
+  };
+
   return (
     <main>
       {isFetched && (
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            <div className="flex flex-col md:flex-row gap-8">
-              <div className="md:w-2/3">
+            <div className="flex flex-col lg:flex-row gap-8">
+              <div className="lg:w-2/3 ">
                 <div className="flex flex-col sm:flex-row gap-6 mb-6">
                   <div className="sm:w-1/3">
                     <Image
@@ -36,17 +43,27 @@ export default function ClientPage({
                     />
                   </div>
                   <div className="sm:w-2/3">
-                    <h2 className="text-3xl font-bold mb-2">
+                    <h2 className="text-3xl font-bold mb-2 leading-normal">
                       {bookData!.title}
                     </h2>
                     <p className="text-xl mb-2">
                       by{" "}
-                      <a
-                        href={bookData!.author[0].url}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {bookData!.author[0].name}
-                      </a>
+                      {bookData!.author
+                        .map((author) => (
+                          <a
+                            key={author.id + "author"}
+                            href={author.url}
+                            className="dark:text-zinc-400 text-zinc-800 hover:underline"
+                          >
+                            {author.name}
+                          </a>
+                        ))
+                        .reduce((prev, curr) => (
+                          <>
+                            {prev}, {curr}
+                          </>
+                        ))}
+                      .
                     </p>
                     <p className="mb-2">
                       <a
@@ -62,7 +79,7 @@ export default function ClientPage({
                           key={i}
                           className={`w-5 h-5 ${
                             i < Math.floor(parseFloat(bookData!.rating))
-                              ? "text-yellow-400"
+                              ? "text-amber-400 fill-current"
                               : "text-gray-300"
                           }`}
                         />
@@ -72,8 +89,16 @@ export default function ClientPage({
                         {bookData!.reviewsCount}
                       </span> */}
                     </div>
-                    <p className="text-lg text-gray-700 dark:text-gray-50">
-                      {bookData!.desc}
+                    <p className="text-lg text-gray-700 dark:text-gray-50 font-sans">
+                      {isReadMore
+                        ? bookData!.desc
+                        : `${bookData!.desc.substring(0, 200)}... `}
+                      <button
+                        onClick={toggleReadMore}
+                        className="text-blue-600 hover:underline ml-1"
+                      >
+                        {isReadMore ? "Read Less" : "Read More"}
+                      </button>
                     </p>
                   </div>
                 </div>

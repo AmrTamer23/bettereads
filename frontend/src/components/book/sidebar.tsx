@@ -8,8 +8,8 @@ export function Sidebar({
   publishDate: string;
 }) {
   return (
-    <div className="md:w-1/3">
-      <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="lg:w-1/3">
+      <div className="bg-card p-6 rounded-lg shadow-md border">
         <h3 className="text-xl font-semibold mb-4">Book Details</h3>
         <div className="mb-4">
           <h4 className="font-semibold">Genres</h4>
@@ -19,7 +19,7 @@ export function Sidebar({
               .map((genre) => (
                 <span
                   key={genre}
-                  className="px-2 py-1 bg-gray-200 text-sm rounded-full text-gray-700"
+                  className="px-2 py-1 bg-card text-sm rounded-full text-foreground border"
                 >
                   {genre}
                 </span>
@@ -28,11 +28,15 @@ export function Sidebar({
         </div>
         <div className="mb-4">
           <h4 className="font-semibold">Edition</h4>
-          <p className="text-sm text-gray-700">{bookEdition}</p>
+          <p className="text-sm text-muted-foreground font-mono">
+            {bookEdition}
+          </p>
         </div>
         <div>
           <h4 className="font-semibold">Published</h4>
-          <p className="text-sm text-gray-700">{publishDate}</p>
+          <p className="text-sm text-muted-foreground font-mono">
+            {publishDate}
+          </p>
         </div>
       </div>
     </div>
