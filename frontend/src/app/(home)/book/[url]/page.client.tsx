@@ -67,12 +67,14 @@ export default function ClientPage({
                           }`}
                         />
                       ))}
-                      <span className="ml-2 text-sm text-gray-600">
+                      {/* <span className="ml-2 text-sm text-gray-600 font-sans">
                         {bookData!.rating} · {bookData!.ratingCount} ratings ·{" "}
                         {bookData!.reviewsCount}
-                      </span>
+                      </span> */}
                     </div>
-                    <p className="text-sm text-gray-700">{bookData!.desc}</p>
+                    <p className="text-lg text-gray-700 dark:text-gray-50">
+                      {bookData!.desc}
+                    </p>
                   </div>
                 </div>
                 {/* <Reviews reviews={bookData!.reviews.slice(0, 10)} /> */}

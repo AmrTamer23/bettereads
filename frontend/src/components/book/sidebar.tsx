@@ -14,14 +14,16 @@ export function Sidebar({
         <div className="mb-4">
           <h4 className="font-semibold">Genres</h4>
           <div className="flex flex-wrap gap-2 mt-2">
-            {genres.map((genre) => (
-              <span
-                key={genre}
-                className="px-2 py-1 bg-gray-200 text-sm rounded-full text-gray-700"
-              >
-                {genre}
-              </span>
-            ))}
+            {genres
+              .filter((it) => it !== "")
+              .map((genre) => (
+                <span
+                  key={genre}
+                  className="px-2 py-1 bg-gray-200 text-sm rounded-full text-gray-700"
+                >
+                  {genre}
+                </span>
+              ))}
           </div>
         </div>
         <div className="mb-4">
