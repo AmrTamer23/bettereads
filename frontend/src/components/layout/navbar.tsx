@@ -15,9 +15,11 @@ export function Navbar() {
 
   return (
     <header className="flex items-end justify-between pt-8 px-12">
-      <h1 className="~text-2xl/4xl text-primary dark:text-[#AF8F6F]">
-        BetterReads
-      </h1>
+      <Link href="/">
+        <h1 className="~text-2xl/4xl text-primary dark:text-[#AF8F6F]">
+          BetterReads
+        </h1>
+      </Link>
       <nav className="*:~text-lg/xl flex gap-2 items-end *:dark:text-[#AF8F6F]">
         <Button variant="link" asChild>
           <Link href="/search">Search </Link>

@@ -102,7 +102,6 @@ export default function ClientPage({
                     </p>
                   </div>
                 </div>
-                {/* <Reviews reviews={bookData!.reviews.slice(0, 10)} /> */}
               </div>
               <Sidebar
                 genres={bookData!.genres}
