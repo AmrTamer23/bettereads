@@ -65,8 +65,9 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
+        sans: ["DM Sans Variable", "sans-serif"],
         serif: ["Merriweather", "serif"],
+        mono: ["Monaspace Neon", "monospace"],
       },
     },
   },

@@ -84,10 +84,9 @@ export default function ClientPage({
                           }`}
                         />
                       ))}
-                      {/* <span className="ml-2 text-sm text-gray-600 font-sans">
-                        {bookData!.rating} · {bookData!.ratingCount} ratings ·{" "}
-                        {bookData!.reviewsCount}
-                      </span> */}
+                      <span className="ml-2 text-primary-foreground font-mono text-xl">
+                        {bookData!.rating} avg rating
+                      </span>
                     </div>
                     <p className="text-lg text-gray-700 dark:text-gray-50 font-sans">
                       {isReadMore
@@ -107,6 +106,11 @@ export default function ClientPage({
                 genres={bookData!.genres}
                 bookEdition={bookData!.bookEdition}
                 publishDate={bookData!.publishDate}
+                totalPages={
+                  bookData!.bookEdition
+                    .split(",")[0]
+                    .split(" ")[0] as unknown as number
+                }
               />
             </div>
           </div>
