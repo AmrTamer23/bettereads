@@ -13,7 +13,7 @@ const getLocalStorageItem = (key: string): string | null => {
 
 const redirectToLogin = () => {
   if (typeof window !== "undefined") {
-    window.location.href = "/";
+    window.location.href = "/login";
   }
 };
 

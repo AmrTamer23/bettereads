@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 import fluid, { extract, screens, fontSize } from "fluid-tailwind";
 import animate from "tailwindcss-animate";
+import typography from "@tailwindcss/typography";
 
 export default {
   darkMode: ["class"],
@@ -63,7 +64,11 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        serif: ["Merriweather", "serif"],
+      },
     },
   },
-  plugins: [animate, fluid],
+  plugins: [animate, fluid, typography],
 } satisfies Config;
