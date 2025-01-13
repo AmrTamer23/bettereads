@@ -6,7 +6,7 @@
   "dependencies": {
     "@hono/node-server": "^1.13.1",
     "@hono/zod-validator": "^0.3.0",
-    "@prisma/client": "5.20.0",
+    "@prisma/client": "^6.2.1",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.7",
     "bcrypt": "^5.1.1",
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
-    "prisma": "5.20.0",
+    "prisma": "^6.2.1",
     "tsx": "^4.7.1"
   }
 }
