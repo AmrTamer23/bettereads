@@ -18,9 +18,6 @@ export const getUserBookById = async (c: Context) => {
     where: {
       id,
     },
-    include: {
-      book: true,
-    },
   });
 
   if (!data) {
@@ -30,40 +27,67 @@ export const getUserBookById = async (c: Context) => {
   return c.json({ data });
 };
 
-export const createUserBook = async (c: Context) => {
+export const createOrUpdateUserBook = async (c: Context) => {
   const body = await c.req.json();
   if (!body.bookId || !body.status) {
     return c.json({ message: "Missing required fields" }, 400);
   }
-  const data = await db.userBook.create({
-    data: {
+
+  const isBookAlreadyAdded = await db.userBook.findFirst({
+    where: {
+      userId: c.get("user")?.id,
       bookId: body.bookId,
-      userId: c.get("user")?.id!,
-      status: body.status,
     },
   });
+
+  if (isBookAlreadyAdded) {
+    const data = await db.userBook.update({
+      where: {
+        id: isBookAlreadyAdded.id,
+      },
+      data: {
+        status: body.status,
+        finishDate: body.finishDate ?? null,
+        startDate: body.startDate ?? null,
+        progress: body.progress,
+      },
+    });
+    return c.json({ message: "Book Updated" }, 200);
+  }
+
+  const data = await db.userBook.create({
+    data: {
+      userId: c.get("user")?.id,
+      bookId: body.bookId,
+      status: body.status,
+      finishDate: body.finishDate ?? null,
+      startDate: body.startDate ?? null,
+      progress: body.progress,
+      numberOfPages: body.numberOfPages,
+    },
+  });
+  //TODO: Handle adding review if status is Read
+  //TODO: Handle adding finish date only if the first status of the book is not Read
 
   return c.json({ data }, 201);
 };
 
 export const updateUserBook = async (c: Context) => {
-  const body = await c.req.json();
-
-  const data = await db.userBook.update({
-    where: {
-      id: body.id,
-    },
-    data: {
-      status: body.status,
-      finishDate: body.finishDate ?? null,
-      rating: body.rating ?? null,
-      review: body.review ?? null,
-      startDate: body.startDate ?? null,
-      progress: body.progress,
-    },
-  });
-
-  return c.json({ data });
+  // const body = await c.req.json();
+  // const data = await db.userBook.update({
+  //   where: {
+  //     id: body.id,
+  //   },
+  //   data: {
+  //     status: body.status,
+  //     finishDate: body.finishDate ?? null,
+  //     rating: body.rating ?? null,
+  //     review: body.review ?? null,
+  //     startDate: body.startDate ?? null,
+  //     progress: body.progress,
+  //   },
+  // });
+  // return c.json({ data });
 };
 
 export const deleteUserBook = async (c: Context) => {
