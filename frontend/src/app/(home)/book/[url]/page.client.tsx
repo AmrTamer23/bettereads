@@ -73,17 +73,19 @@ export default function ClientPage({
                         {bookData!.series}
                       </a>
                     </p>
-                    <div className="flex items-center mb-2">
-                      {[...Array(5)].map((_, i) => (
-                        <StarIcon
-                          key={i}
-                          className={`w-5 h-5 ${
-                            i < Math.floor(parseFloat(bookData!.rating))
-                              ? "text-amber-400 fill-current"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
+                    <div className="flex items-center">
+                      <div className="flex items-center mb-2">
+                        {[...Array(5)].map((_, i) => (
+                          <StarIcon
+                            key={i}
+                            className={`w-6 h-6 ${
+                              i < Math.floor(parseFloat(bookData!.rating))
+                                ? "text-amber-400 fill-current"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
                       <span className="ml-2 text-primary-foreground font-mono text-xl">
                         {bookData!.rating} avg rating
                       </span>
