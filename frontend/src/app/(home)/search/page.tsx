@@ -62,7 +62,7 @@ export default function SearchPage() {
           placeholder="Search for books..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full h-10 !text-lg py-6"
+          className="w-full h-10 !text-lg py-6 font-sans"
         />
         <Button disabled={loading} className="text-lg py-6 h-10" size="lg">
           <SearchIcon className="mr-2 h-8 w-8" />

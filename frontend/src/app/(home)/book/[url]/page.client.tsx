@@ -1,18 +1,16 @@
 "use client";
-import { useState } from "react";
 import { Sidebar } from "@/components/book/sidebar";
 import { getBookDetails } from "@/lib/api/scraper/book";
 import { useQuery } from "@tanstack/react-query";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function ClientPage({
   params: { url },
 }: {
   params: { url: string };
 }) {
-  const [isReadMore, setIsReadMore] = useState(false);
-
   const { data: bookData, isFetched } = useQuery({
     queryKey: ["bookDetails", url],
     queryFn: async () =>
@@ -20,10 +18,6 @@ export default function ClientPage({
         url,
       }).then((res) => res.data),
   });
-
-  const toggleReadMore = () => {
-    setIsReadMore(!isReadMore);
-  };
 
   return (
     <main>
@@ -91,15 +85,9 @@ export default function ClientPage({
                       </span>
                     </div>
                     <p className="text-lg text-gray-700 dark:text-gray-50 font-sans">
-                      {isReadMore
-                        ? bookData!.desc
-                        : `${bookData!.desc.substring(0, 200)}... `}
-                      <button
-                        onClick={toggleReadMore}
-                        className="text-blue-600 hover:underline ml-1"
-                      >
-                        {isReadMore ? "Read Less" : "Read More"}
-                      </button>
+                      <ScrollArea className="h-96 w-full rounded-md  p-4 ">
+                        {bookData!.desc}
+                      </ScrollArea>
                     </p>
                   </div>
                 </div>
