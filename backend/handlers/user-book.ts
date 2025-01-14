@@ -49,7 +49,7 @@ export const createOrUpdateUserBook = async (c: Context) => {
   });
 
   if (isBookAlreadyAdded) {
-    const data = await db.userBook.update({
+    await db.userBook.update({
       where: {
         id: isBookAlreadyAdded.id,
       },
@@ -58,6 +58,7 @@ export const createOrUpdateUserBook = async (c: Context) => {
         finishDate: body.finishDate ?? null,
         startDate: body.startDate ?? null,
         progress: body.progress,
+        numberOfPages: body.numberOfPages,
       },
     });
     return c.json({ message: "Book Updated" }, 200);
@@ -72,6 +73,9 @@ export const createOrUpdateUserBook = async (c: Context) => {
       startDate: body.startDate ?? null,
       progress: body.progress,
       numberOfPages: body.numberOfPages,
+      title: body.title,
+      coverURL: body.coverURL,
+      author: body.author,
     },
   });
   //TODO: Handle adding review if status is Read

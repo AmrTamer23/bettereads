@@ -1,6 +1,6 @@
 import { axiosInstance } from "../instance";
 
-interface Root {
+export interface LibraryData {
   data: Data[];
 }
 
@@ -22,5 +22,5 @@ interface Data {
 }
 
 export async function getLibrary() {
-  return await axiosInstance.get<Root>(`/user-books`);
+  return await axiosInstance.get<LibraryData>(`/user-books`);
 }
