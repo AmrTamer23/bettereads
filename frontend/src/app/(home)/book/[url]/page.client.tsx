@@ -83,12 +83,12 @@ export default function ClientPage({
                       <span className="ml-2 text-primary-foreground font-mono text-xl">
                         {bookData!.rating} avg rating
                       </span>
-                    </div>
-                    <p className="text-lg text-gray-700 dark:text-gray-50 font-sans">
-                      <ScrollArea className="h-96 w-full rounded-md  p-4 ">
+                    </div>{" "}
+                    <ScrollArea className="h-96 w-full rounded-md  p-4 ">
+                      <p className="text-lg text-gray-700 dark:text-gray-50 font-sans">
                         {bookData!.desc}
-                      </ScrollArea>
-                    </p>
+                      </p>
+                    </ScrollArea>
                   </div>
                 </div>
               </div>
