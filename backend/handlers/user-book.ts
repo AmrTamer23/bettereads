@@ -13,6 +13,7 @@ export const getAllUserBooks = async (c: Context) => {
       coverURL: true,
       status: true,
       progress: true,
+      author: true,
     },
   });
 
