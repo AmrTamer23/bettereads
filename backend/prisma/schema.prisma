@@ -25,6 +25,9 @@ model UserBook {
   user       User       @relation(fields: [userId], references: [id])
   userId     String
   bookId     String
+  title String?
+  coverURL String?
+  author String?
   startDate  DateTime?
   finishDate DateTime?
   review     Review? @relation(fields: [reviewid], references: [id])

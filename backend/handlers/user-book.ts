@@ -6,6 +6,13 @@ export const getAllUserBooks = async (c: Context) => {
     where: {
       userId: c.get("user")?.id,
     },
+    select: {
+      id: true,
+      title: true,
+      coverURL: true,
+      status: true,
+      progress: true,
+    },
   });
 
   return c.json({ data });
