@@ -3,12 +3,17 @@ import { BookOpen, BookMarked, ShoppingCart } from "lucide-react";
 import CurrentlyReading from "@/components/home/currently-reading";
 import ToReadList from "@/components/home/to-read-list";
 import ToBuyCarousel from "@/components/home/to-buy-carousel";
+import { getLibrary } from "@/lib/api/tracker/get-library";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
+  const { data: libraryData, isFetched } = useQuery({
+    queryKey: ["library"],
+    queryFn: async () => await getLibrary().then((res) => res.data.data),
+  });
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="~text-2xl/3xl font-bold mb-8">My Book Collections</h1>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div className="col-span-1 md:col-span-2 lg:col-span-2">
           <section className="mb-8">
@@ -24,7 +29,13 @@ export default function Home() {
               <BookMarked className="mr-2" />
               To Read
             </h2>
-            <ToReadList />
+            <ToReadList
+              data={
+                isFetched
+                  ? libraryData!.filter((book) => book.status === "TO_READ")
+                  : []
+              }
+            />
           </section>
         </div>
 
