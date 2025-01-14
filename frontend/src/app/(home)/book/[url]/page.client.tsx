@@ -93,6 +93,7 @@ export default function ClientPage({
                 </div>
               </div>
               <Sidebar
+                bookId={url}
                 genres={bookData!.genres}
                 bookEdition={bookData!.bookEdition}
                 publishDate={bookData!.publishDate}
@@ -101,6 +102,13 @@ export default function ClientPage({
                     .split(",")[0]
                     .split(" ")[0] as unknown as number
                 }
+                bookData={{
+                  title: bookData!.title,
+                  coverURL: bookData!.cover,
+                  author: bookData!.author
+                    .map((author) => author.name)
+                    .join(", "),
+                }}
               />
             </div>
           </div>

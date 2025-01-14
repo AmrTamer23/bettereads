@@ -70,7 +70,7 @@ export default function SearchPage() {
         </Button>
       </form>
 
-      {(res?.data?.result?.length ?? 0) > 1 ? (
+      {res?.data?.result?.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {res?.data.result.map((book) => (
             <BookCard

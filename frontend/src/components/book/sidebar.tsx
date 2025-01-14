@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -20,8 +20,11 @@ import {
 import { Progress } from "../ui/progress";
 import { BookOpen, Pencil, BookMarked, Star } from "lucide-react";
 import clsx from "clsx";
+import { addToLibrary } from "@/lib/api/tracker/add-to-library";
+import { useQuery } from "@tanstack/react-query";
+import { getLibrary } from "@/lib/api/tracker/get-library";
 
-type LibraryState = "To Buy" | "Reading" | "Read" | "Want to Read";
+type LibraryState = "TO_BUY" | "TO_READ" | "READING" | "READ";
 
 type Quote = {
   id: string;
@@ -36,17 +39,40 @@ type Note = {
 };
 
 export function Sidebar({
+  bookId,
   genres,
   bookEdition,
   publishDate,
   totalPages,
+  bookData,
 }: {
+  bookId: string;
   genres: string[];
   bookEdition: string;
   publishDate: string;
   totalPages: number;
+  bookData: {
+    title: string;
+    coverURL: string;
+    author: string;
+  };
 }) {
+  const { data: libraryData } = useQuery({
+    queryKey: ["library"],
+    queryFn: async () => await getLibrary().then((res) => res.data.data),
+  });
+
   const [inLibrary, setInLibrary] = useState<LibraryState | null>(null);
+
+  useEffect(() => {
+    if (libraryData) {
+      setInLibrary(
+        libraryData.filter((b) => b.bookId === bookId)[0]
+          ?.status as LibraryState
+      );
+    }
+  }, [bookId, libraryData]);
+
   const [pages, setPages] = useState(0);
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(0);
@@ -55,12 +81,44 @@ export function Sidebar({
   const [newQuote, setNewQuote] = useState({ text: "", page: 0 });
   const [newNote, setNewNote] = useState({ text: "", page: 0 });
 
-  const handleAddToLibrary = (value: LibraryState) => {
+  const handleAddToLibrary = async (value: LibraryState) => {
     setInLibrary(value);
-    if (value === "Read") {
+    if (value === "READ") {
       setPages(totalPages);
-    } else if (value === "Reading") {
+    } else if (value === "READING") {
       setPages(0);
+    } else if (value === "TO_BUY") {
+      const data = await addToLibrary({
+        bookId: bookId,
+        status: value,
+        numberOfPages: Number(totalPages),
+        startDate: null,
+        finishDate: null,
+        author: bookData.author,
+        coverURL: bookData.coverURL,
+        progress: 0,
+        title: bookData.title,
+      });
+
+      if (data.status === 201 || data.status === 200) {
+        console.log("Book added to library");
+      }
+    } else if (value === "TO_READ") {
+      const data = await addToLibrary({
+        bookId: bookId,
+        status: value,
+        numberOfPages: Number(totalPages),
+        startDate: null,
+        finishDate: null,
+        author: bookData.author,
+        coverURL: bookData.coverURL,
+        progress: 0,
+        title: bookData.title,
+      });
+
+      if (data.status === 201 || data.status === 200) {
+        console.log("Book added to library");
+      }
     }
   };
 
@@ -127,10 +185,10 @@ export function Sidebar({
                 <span
                   className={clsx(
                     "font-bold",
-                    inLibrary === "Read" && "text-primary brightness-150",
-                    inLibrary === "Reading" && "text-primary brightness-200",
-                    inLibrary === "To Buy" && "text-emerald-600",
-                    inLibrary === "Want to Read" && "text-amber-600"
+                    inLibrary === "READ" && "text-primary brightness-150",
+                    inLibrary === "READING" && "text-primary brightness-200",
+                    inLibrary === "TO_BUY" && "text-emerald-600",
+                    inLibrary === "TO_READ" && "text-amber-600"
                   )}
                 >
                   {inLibrary}
@@ -138,7 +196,7 @@ export function Sidebar({
                 .
               </p>
             </div>
-            {(inLibrary === "Read" || inLibrary === "Reading") && (
+            {(inLibrary === "READ" || inLibrary === "READING") && (
               <div className="flex flex-col gap-2">
                 <Dialog>
                   <DialogTrigger asChild>
@@ -179,8 +237,8 @@ export function Sidebar({
                 </div>
               </div>
             )}
-            {inLibrary === "Read" ||
-              (inLibrary === "Reading" && (
+            {inLibrary === "READ" ||
+              (inLibrary === "READING" && (
                 <div className="flex gap-2">
                   <Dialog>
                     <DialogTrigger asChild className="flex-1">
@@ -210,7 +268,7 @@ export function Sidebar({
                             </div>
                           ))}
                         </div>
-                        {inLibrary === "Reading" && (
+                        {inLibrary === "READING" && (
                           <>
                             <div className="grid gap-2">
                               <label htmlFor="quote">New Quote</label>
@@ -274,7 +332,7 @@ export function Sidebar({
                             </div>
                           ))}
                         </div>
-                        {inLibrary === "Reading" && (
+                        {inLibrary === "READING" && (
                           <>
                             <div className="grid gap-2">
                               <label htmlFor="note">New Note</label>
@@ -312,7 +370,7 @@ export function Sidebar({
                   </Dialog>
                 </div>
               ))}
-            {inLibrary === "Read" && (
+            {inLibrary === "READ" && (
               <div>
                 <h4 className="font-semibold mb-2">Your Review</h4>
                 <div className="flex items-center mb-2">
@@ -355,10 +413,10 @@ export function Sidebar({
                 <SelectValue placeholder="Add to list" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="To Buy">To Buy</SelectItem>
-                <SelectItem value="Reading">Reading</SelectItem>
-                <SelectItem value="Read">Read</SelectItem>
-                <SelectItem value="Want to Read">Want to Read</SelectItem>
+                <SelectItem value="TO_BUY">To Buy</SelectItem>
+                <SelectItem value="READING">Reading</SelectItem>
+                <SelectItem value="READ">Read</SelectItem>
+                <SelectItem value="TO_READ">Want to Read</SelectItem>
               </SelectContent>
             </Select>
           </>
