@@ -8,6 +8,7 @@ export const getAllUserBooks = async (c: Context) => {
     },
     select: {
       id: true,
+      bookId: true,
       title: true,
       coverURL: true,
       status: true,
