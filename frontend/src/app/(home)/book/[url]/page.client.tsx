@@ -80,7 +80,7 @@ export default function ClientPage({
                           />
                         ))}
                       </div>
-                      <span className="ml-2 text-primary-foreground font-mono text-xl">
+                      <span className="ml-2 text-primary font-mono text-xl brightness-150">
                         {bookData!.rating} avg rating
                       </span>
                     </div>{" "}
