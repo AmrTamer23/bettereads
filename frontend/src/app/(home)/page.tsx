@@ -1,10 +1,10 @@
 "use client";
-import { BookOpen, BookMarked } from "lucide-react";
-import CurrentlyReading from "@/components/home/currently-reading";
+import { BookMarked } from "lucide-react";
 import ToReadList from "@/components/home/to-read-list";
 import { getLibrary } from "@/lib/api/tracker/get-library";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import ReadList from "@/components/home/read-list";
 
 export default function Home() {
   const { data: libraryData, isFetched } = useQuery({
@@ -36,11 +36,21 @@ export default function Home() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="TO_READ" className="mt-8">
-          <section>
-            <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
-              <BookMarked className="mr-2" />
-              To Read
-            </h2>
+          <section className="flex flex-col gap-2">
+            <div className="flex items-center justify-between ">
+              <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
+                <BookMarked className="mr-2" />
+                To Read
+              </h2>
+              <span className="text-lg font-mono">
+                {isFetched
+                  ? `You have ${
+                      libraryData!.filter((book) => book.status === "TO_READ")
+                        .length
+                    } books to read`
+                  : "Loading..."}
+              </span>
+            </div>
             <ToReadList
               data={
                 isFetched
@@ -51,18 +61,54 @@ export default function Home() {
           </section>
         </TabsContent>
         <TabsContent value="READING" className="mt-8">
-          <section>
-            <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
-              <BookOpen className="mr-2" />
-              Currently Reading
-            </h2>
-            <CurrentlyReading />
+          <section className="flex flex-col gap-2">
+            <div className="flex items-center justify-between ">
+              <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
+                <BookMarked className="mr-2" />
+                Read
+              </h2>
+              <span className="text-lg font-mono">
+                {isFetched
+                  ? `You are reading ${
+                      libraryData!.filter((book) => book.status === "READING")
+                        .length
+                    } books`
+                  : "Loading..."}
+              </span>
+            </div>
+            <ReadList
+              data={
+                isFetched
+                  ? libraryData!.filter((book) => book.status === "READING")
+                  : []
+              }
+            />
           </section>
         </TabsContent>
-        <TabsContent value="READ">
-          <p className="p-4 text-center text-xs text-muted-foreground">
-            Content for Tab 3
-          </p>
+        <TabsContent value="READ" className="mt-8">
+          <section className="flex flex-col gap-2">
+            <div className="flex items-center justify-between ">
+              <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
+                <BookMarked className="mr-2" />
+                Read
+              </h2>
+              <span className="text-lg font-mono">
+                {isFetched
+                  ? `You have read ${
+                      libraryData!.filter((book) => book.status === "READ")
+                        .length
+                    } books`
+                  : "Loading..."}
+              </span>
+            </div>
+            <ReadList
+              data={
+                isFetched
+                  ? libraryData!.filter((book) => book.status === "READ")
+                  : []
+              }
+            />
+          </section>
         </TabsContent>
       </Tabs>
     </div>
