@@ -73,7 +73,7 @@ export const createOrUpdateUserBook = async (c: Context) => {
       finishDate: body.finishDate ?? null,
       startDate: body.startDate ?? null,
       progress: body.progress,
-      numberOfPages: body.numberOfPages,
+      numberOfPages: body.numberOfPages ?? 200,
       title: body.title,
       coverURL: body.coverURL,
       author: body.author,
