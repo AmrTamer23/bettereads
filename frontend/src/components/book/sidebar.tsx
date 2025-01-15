@@ -84,9 +84,33 @@ export function Sidebar({
   const handleAddToLibrary = async (value: LibraryState) => {
     setInLibrary(value);
     if (value === "READ") {
-      setPages(totalPages);
+      const data = await addToLibrary({
+        bookId: bookId,
+        status: value,
+        numberOfPages: Number(totalPages),
+        startDate: null,
+        finishDate: null,
+        author: bookData.author,
+        coverURL: bookData.coverURL,
+        progress: 100,
+        title: bookData.title,
+      });
+      console.log(data);
+      if (data.status === 201 || data.status === 200) {
+        console.log("Book added to library");
+      }
     } else if (value === "READING") {
-      setPages(0);
+      const data = await addToLibrary({
+        bookId: bookId,
+        status: value,
+        numberOfPages: Number(totalPages),
+        startDate: new Date().toISOString(),
+        finishDate: null,
+        author: bookData.author,
+        coverURL: bookData.coverURL,
+        progress: 0,
+        title: bookData.title,
+      });
     } else if (value === "TO_BUY") {
       const data = await addToLibrary({
         bookId: bookId,
@@ -141,7 +165,9 @@ export function Sidebar({
     // Here you would typically send the review to your backend
   };
 
-  const progressPercentage = Math.round((pages / totalPages) * 100);
+  const progressPercentage =
+    libraryData?.find((b) => b.bookId === bookId)?.progress ??
+    Math.round((pages / totalPages) * 100);
 
   return (
     <div className="lg:w-1/3 flex flex-col gap-4">
