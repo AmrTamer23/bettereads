@@ -7,7 +7,7 @@ import {
   // updateBook,
 } from "../handlers/books";
 import {
-  createUserBook,
+  createOrUpdateUserBook,
   deleteUserBook,
   getAllUserBooks,
   getUserBookById,
@@ -29,7 +29,7 @@ routes.get("/books/:url", (c) => {
 
 routes.get("/user-books", getAllUserBooks);
 routes.get("/user-books/:id", getUserBookById);
-routes.post("/user-books", createUserBook);
+routes.post("/user-books", createOrUpdateUserBook);
 routes.put("/user-books/:id", updateUserBook);
 routes.delete("/user-books/:id", deleteUserBook);
 

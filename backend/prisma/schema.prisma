@@ -25,14 +25,18 @@ model UserBook {
   user       User       @relation(fields: [userId], references: [id])
   userId     String
   bookId     String
+  title String?
+  coverURL String?
+  author String?
   startDate  DateTime?
   finishDate DateTime?
-  rating     Int?
-  review     String?
+  review     Review? @relation(fields: [reviewid], references: [id])
+  reviewid String?
   status     ReadStatus
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   progress   Int        @default(0)
+  numberOfPages Int 
 
   @@unique([userId, bookId])
 }
@@ -42,4 +46,12 @@ enum ReadStatus {
   TO_READ
   READING
   READ
+}
+
+model Review {
+  id String @id @default(uuid())
+  content String
+  stars Int
+
+  UserBook UserBook[]
 }

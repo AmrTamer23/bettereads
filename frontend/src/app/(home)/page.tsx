@@ -1,43 +1,116 @@
 "use client";
-import { BookOpen, BookMarked, ShoppingCart } from "lucide-react";
-import CurrentlyReading from "@/components/home/currently-reading";
+import { BookMarked } from "lucide-react";
 import ToReadList from "@/components/home/to-read-list";
-import ToBuyCarousel from "@/components/home/to-buy-carousel";
+import { getLibrary } from "@/lib/api/tracker/get-library";
+import { useQuery } from "@tanstack/react-query";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import ReadList from "@/components/home/read-list";
 
 export default function Home() {
+  const { data: libraryData, isFetched } = useQuery({
+    queryKey: ["library"],
+    queryFn: async () => await getLibrary().then((res) => res.data.data),
+  });
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="~text-2xl/3xl font-bold mb-8">My Book Collections</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div className="col-span-1 md:col-span-2 lg:col-span-2">
-          <section className="mb-8">
-            <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
-              <BookOpen className="mr-2" />
-              Currently Reading
-            </h2>
-            <CurrentlyReading />
+      <Tabs defaultValue="READING">
+        <TabsList className="relative h-auto w-full gap-0.5 bg-transparent p-0 before:absolute before:inset-x-0 before:bottom-0 before:h-px before:bg-border">
+          <TabsTrigger
+            value="TO_READ"
+            className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none text-lg"
+          >
+            To Read
+          </TabsTrigger>
+          <TabsTrigger
+            value="READING"
+            className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none text-lg"
+          >
+            Currently Reading
+          </TabsTrigger>
+          <TabsTrigger
+            value="READ"
+            className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none text-lg"
+          >
+            Read
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="TO_READ" className="mt-8">
+          <section className="flex flex-col gap-2">
+            <div className="flex items-center justify-between ">
+              <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
+                <BookMarked className="mr-2" />
+                To Read
+              </h2>
+              <span className="text-lg font-mono">
+                {isFetched
+                  ? `You have ${
+                      libraryData!.filter((book) => book.status === "TO_READ")
+                        .length
+                    } books to read`
+                  : "Loading..."}
+              </span>
+            </div>
+            <ToReadList
+              data={
+                isFetched
+                  ? libraryData!.filter((book) => book.status === "TO_READ")
+                  : []
+              }
+            />
           </section>
-
-          <section>
-            <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
-              <BookMarked className="mr-2" />
-              To Read
-            </h2>
-            <ToReadList />
+        </TabsContent>
+        <TabsContent value="READING" className="mt-8">
+          <section className="flex flex-col gap-2">
+            <div className="flex items-center justify-between ">
+              <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
+                <BookMarked className="mr-2" />
+                Read
+              </h2>
+              <span className="text-lg font-mono">
+                {isFetched
+                  ? `You are reading ${
+                      libraryData!.filter((book) => book.status === "READING")
+                        .length
+                    } books`
+                  : "Loading..."}
+              </span>
+            </div>
+            <ReadList
+              data={
+                isFetched
+                  ? libraryData!.filter((book) => book.status === "READING")
+                  : []
+              }
+            />
           </section>
-        </div>
-
-        <div>
-          <section>
-            <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
-              <ShoppingCart className="mr-2" />
-              Priority To Buy
-            </h2>
-            <ToBuyCarousel />
+        </TabsContent>
+        <TabsContent value="READ" className="mt-8">
+          <section className="flex flex-col gap-2">
+            <div className="flex items-center justify-between ">
+              <h2 className="~text-lg/2xl font-semibold mb-4 flex items-center">
+                <BookMarked className="mr-2" />
+                Read
+              </h2>
+              <span className="text-lg font-mono">
+                {isFetched
+                  ? `You have read ${
+                      libraryData!.filter((book) => book.status === "READ")
+                        .length
+                    } books`
+                  : "Loading..."}
+              </span>
+            </div>
+            <ReadList
+              data={
+                isFetched
+                  ? libraryData!.filter((book) => book.status === "READ")
+                  : []
+              }
+            />
           </section>
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

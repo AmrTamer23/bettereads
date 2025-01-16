@@ -38,13 +38,15 @@ const pageVariants = {
   },
 };
 
-export default function ToReadList({
+export default function ReadList({
   data,
 }: {
   data: { title: string; coverURL: string; author: string; bookId: string }[];
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages] = useState(Math.ceil(data.length / 4));
+  const [totalPages] = useState(
+    Math.ceil(data.length / 4) > 1 ? Math.ceil(data.length / 4) : 1
+  );
 
   return (
     <main className="flex flex-col items-center justify-center min-h-[70dvh]">
