@@ -18,11 +18,18 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Progress } from "../ui/progress";
-import { BookOpen, Pencil, BookMarked, Star } from "lucide-react";
+import { BookOpen, Pencil, BookMarked, Star, Minus, Plus } from "lucide-react";
 import clsx from "clsx";
-import { addToLibrary } from "@/lib/api/tracker/add-to-library";
+import { addToLibrary, updateProgress } from "@/lib/api/tracker/add-to-library";
 import { useQuery } from "@tanstack/react-query";
 import { getLibrary } from "@/lib/api/tracker/get-library";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Button as AriaButton,
+  Group,
+  Input as AriaInput,
+  NumberField,
+} from "react-aria-components";
 
 type LibraryState = "TO_BUY" | "TO_READ" | "READING" | "READ";
 
@@ -64,22 +71,14 @@ export function Sidebar({
 
   const [inLibrary, setInLibrary] = useState<LibraryState | null>(null);
 
-  useEffect(() => {
-    if (libraryData) {
-      setInLibrary(
-        libraryData.filter((b) => b.bookId === bookId)[0]
-          ?.status as LibraryState
-      );
-    }
-  }, [bookId, libraryData]);
-
-  const [pages, setPages] = useState(0);
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(0);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [newQuote, setNewQuote] = useState({ text: "", page: 0 });
   const [newNote, setNewNote] = useState({ text: "", page: 0 });
+
+  const { toast } = useToast();
 
   const handleAddToLibrary = async (value: LibraryState) => {
     setInLibrary(value);
@@ -111,6 +110,12 @@ export function Sidebar({
         progress: 0,
         title: bookData.title,
       });
+      if (data.status === 201 || data.status === 200) {
+        toast({
+          title: "Book added to library",
+          description: "You can now update your reading progress",
+        });
+      }
     } else if (value === "TO_BUY") {
       const data = await addToLibrary({
         bookId: bookId,
@@ -165,9 +170,48 @@ export function Sidebar({
     // Here you would typically send the review to your backend
   };
 
-  const progressPercentage =
-    libraryData?.find((b) => b.bookId === bookId)?.progress ??
-    Math.round((pages / totalPages) * 100);
+  const [progress, setProgress] = useState(0);
+
+  const handleProgressUpdate = async () => {
+    if (progress === 100) {
+      const data = await updateProgress({
+        bookId: bookId,
+        status: "READ",
+        progress: 100,
+      });
+
+      if (data.status === 201 || data.status === 200) {
+        toast({
+          title: "Book marked as read",
+          description: "You've finished reading this book",
+        });
+      }
+    } else {
+      const data = await updateProgress({
+        bookId: bookId,
+        status: "READING",
+        progress: progress,
+      });
+
+      if (data.status === 201 || data.status === 200) {
+        toast({
+          title: "Progress updated",
+          description: "Your reading progress has been updated",
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (libraryData) {
+      setInLibrary(
+        libraryData.filter((b) => b.bookId === bookId)[0]
+          ?.status as LibraryState
+      );
+
+      setProgress(libraryData.filter((b) => b.bookId === bookId)[0]?.progress);
+    }
+  }, [bookId, libraryData]);
 
   return (
     <div className="lg:w-1/3 flex flex-col gap-4">
@@ -232,33 +276,70 @@ export function Sidebar({
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
-                    <DialogHeader>
+                    <DialogHeader className="flex flex-col gap-2">
                       <DialogTitle>Update Reading Progress</DialogTitle>
                       <DialogDescription>
                         Update the number of pages you&apos;ve read.
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="flex items-center gap-2 py-4">
+                    <div className="flex items-center gap-2 py-4 font-sans text-lg">
                       <label htmlFor="pages" className="font-semibold">
                         Pages read:
                       </label>
-                      <Input
-                        id="pages"
-                        type="number"
-                        value={pages}
-                        onChange={(e) => setPages(Number(e.target.value))}
-                        className="w-20"
-                      />
-                      <span className="text-sm text-muted-foreground">
+                      <NumberField
+                        defaultValue={
+                          libraryData?.find((b) => b.bookId === bookId)
+                            ?.progress
+                            ? (libraryData.find((b) => b.bookId === bookId)!
+                                .progress /
+                                100) *
+                              totalPages
+                            : 0
+                        }
+                        minValue={0}
+                        maxValue={totalPages}
+                        onChange={(e) => {
+                          setProgress((e / totalPages) * 100);
+                        }}
+                        className="*:text-lg"
+                      >
+                        <Group className="relative inline-flex h-9 w-full max-w-40  items-center overflow-hidden whitespace-nowrap rounded-lg border border-input text-sm shadow-sm shadow-black/5 transition-shadow data-[focus-within]:border-ring data-[disabled]:opacity-50 data-[focus-within]:outline-none data-[focus-within]:ring-[3px] data-[focus-within]:ring-ring/20">
+                          <AriaButton
+                            slot="decrement"
+                            className="-ms-px flex aspect-square h-[inherit] items-center justify-center rounded-s-lg border border-input bg-background text-sm text-muted-foreground/80 transition-shadow hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <Minus
+                              size={16}
+                              strokeWidth={2}
+                              aria-hidden="true"
+                            />
+                          </AriaButton>
+                          <AriaInput className="w-full grow bg-background px-3 py-2 text-center tabular-nums text-foreground focus:outline-none" />
+                          <Button
+                            slot="increment"
+                            className="-me-px flex aspect-square h-[inherit] items-center justify-center rounded-e-lg border border-input bg-background text-sm text-muted-foreground/80 transition-shadow hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <Plus
+                              size={16}
+                              strokeWidth={2}
+                              aria-hidden="true"
+                            />
+                          </Button>
+                        </Group>
+                      </NumberField>
+                      <span className="text-lg text-muted-foreground">
                         / {totalPages}
                       </span>
                     </div>
+                    <Button onClick={handleProgressUpdate} type="submit">
+                      Update
+                    </Button>
                   </DialogContent>
                 </Dialog>
                 <div className="flex items-center gap-2">
-                  <Progress value={progressPercentage} className="w-full" />
+                  <Progress value={progress} className="w-full" />
                   <span className="text-sm font-medium font-mono">
-                    {progressPercentage}%
+                    {Math.floor(progress)}%
                   </span>
                 </div>
               </div>

@@ -35,7 +35,7 @@ model UserBook {
   status     ReadStatus
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  progress   Int        @default(0)
+  progress   Float        @default(0)
   numberOfPages Int 
 
   @@unique([userId, bookId])
