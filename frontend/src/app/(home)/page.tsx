@@ -26,7 +26,7 @@ export default function Home() {
             value="READING"
             className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none text-lg"
           >
-            Currently Reading
+            Reading
           </TabsTrigger>
           <TabsTrigger
             value="READ"
@@ -79,7 +79,13 @@ export default function Home() {
             <ReadList
               data={
                 isFetched
-                  ? libraryData!.filter((book) => book.status === "READING")
+                  ? libraryData!
+                      .filter((book) => book.status === "READING")
+                      .sort((a, b) => {
+                        if (a.progress > b.progress) return -1;
+                        if (a.progress < b.progress) return 1;
+                        return 0;
+                      })
                   : []
               }
             />

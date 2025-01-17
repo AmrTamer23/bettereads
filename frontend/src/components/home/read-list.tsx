@@ -16,6 +16,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
+import { Progress } from "../ui/progress";
 
 const pageVariants = {
   initial: {
@@ -41,7 +42,14 @@ const pageVariants = {
 export default function ReadList({
   data,
 }: {
-  data: { title: string; coverURL: string; author: string; bookId: string }[];
+  data: {
+    title: string;
+    coverURL: string;
+    author: string;
+    bookId: string;
+    status: GoodreadsBook["status"];
+    progress: number;
+  }[];
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages] = useState(
@@ -76,7 +84,7 @@ export default function ReadList({
                       {book.author}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex flex-col gap-4">
                     <Image
                       src={book.coverURL}
                       alt={book.title}
@@ -84,6 +92,17 @@ export default function ReadList({
                       width={500}
                       height={300}
                     />
+                    {book.status === "READING" && (
+                      <div className="flex items-center gap-2">
+                        <Progress
+                          value={book.progress}
+                          className="w-full grow flex-1 "
+                        />
+                        <span className="text-sm font-medium font-mono">
+                          {Math.floor(book.progress)}%
+                        </span>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </Link>
