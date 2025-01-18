@@ -27,13 +27,13 @@ type Author = {
 
 // Review type for the reviews array
 type Review = {
-  id: number;
-  image: string;
-  author: string;
-  date: string;
-  stars: string;
+  id: string;
+  // image: string;
+  // author: string;
+  // date: string;
+  stars: number;
   text: string;
-  likes: string;
+  // likes: string;
 };
 
 // Main GoodreadsBook type

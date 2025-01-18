@@ -1,5 +1,5 @@
 "use client";
-import { Sidebar } from "@/components/book/sidebar";
+import { Sidebar } from "@/components/book/side-bar";
 import { getBookDetails } from "@/lib/api/scraper/book";
 import { useQuery } from "@tanstack/react-query";
 import { StarIcon } from "lucide-react";
@@ -24,19 +24,19 @@ export default function ClientPage({
       {isFetched && (
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            <div className="flex flex-col lg:flex-row gap-8">
-              <div className="lg:w-2/3 ">
-                <div className="flex flex-col sm:flex-row gap-6 mb-6">
-                  <div className="sm:w-1/3">
+            <div className="flex flex-col lg:flex-row gap-2">
+              <div className="lg:w-2/3 flex flex-col ">
+                <div className="flex flex-col sm:flex-row gap-6 ">
+                  <div className="sm:w-1/3  h-fit">
                     <Image
                       src={bookData!.cover}
                       alt={bookData!.title}
                       width={200}
                       height={300}
-                      className="w-full h-auto rounded-lg shadow-lg"
+                      className="w-full h-auto rounded-lg shadow-lg border"
                     />
                   </div>
-                  <div className="sm:w-2/3">
+                  <div className="sm:w-2/3  h-[45dvh]">
                     <h2 className="text-3xl font-bold mb-2 leading-normal">
                       {bookData!.title}
                     </h2>
@@ -91,6 +91,7 @@ export default function ClientPage({
                     </ScrollArea>
                   </div>
                 </div>
+                <div className=" w-full h-full bg-card p-6 rounded-lg shadow-md border"></div>
               </div>
               <Sidebar
                 bookId={url}
