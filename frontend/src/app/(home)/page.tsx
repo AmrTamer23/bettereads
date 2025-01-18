@@ -1,6 +1,6 @@
 "use client";
 import { BookMarked } from "lucide-react";
-import ToReadList from "@/components/home/to-read-list";
+
 import { getLibrary } from "@/lib/api/tracker/get-library";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -26,7 +26,7 @@ export default function Home() {
             value="READING"
             className="overflow-hidden rounded-b-none border-x border-t border-border bg-muted py-2 data-[state=active]:z-10 data-[state=active]:shadow-none text-lg"
           >
-            Currently Reading
+            Reading
           </TabsTrigger>
           <TabsTrigger
             value="READ"
@@ -51,10 +51,16 @@ export default function Home() {
                   : "Loading..."}
               </span>
             </div>
-            <ToReadList
+            <ReadList
               data={
                 isFetched
-                  ? libraryData!.filter((book) => book.status === "TO_READ")
+                  ? libraryData!
+                      .filter((book) => book.status === "TO_READ")
+                      .sort((a, b) => {
+                        if (a.progress > b.progress) return -1;
+                        if (a.progress < b.progress) return 1;
+                        return 0;
+                      })
                   : []
               }
             />
@@ -79,7 +85,13 @@ export default function Home() {
             <ReadList
               data={
                 isFetched
-                  ? libraryData!.filter((book) => book.status === "READING")
+                  ? libraryData!
+                      .filter((book) => book.status === "READING")
+                      .sort((a, b) => {
+                        if (a.progress > b.progress) return -1;
+                        if (a.progress < b.progress) return 1;
+                        return 0;
+                      })
                   : []
               }
             />

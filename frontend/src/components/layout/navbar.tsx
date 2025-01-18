@@ -24,12 +24,12 @@ export function Navbar() {
         <Button variant="link" asChild>
           <Link href="/search">Search </Link>
         </Button>
-        <Button variant="link" asChild>
+        {/* <Button variant="link" asChild>
           <Link href="/">My Books</Link>
         </Button>
         <Button variant="link" asChild>
           <Link href="/">To Buy</Link>
-        </Button>
+        </Button> */}
 
         <div>
           <div className="relative inline-grid h-9 grid-cols-[1fr_1fr] items-center text-sm font-medium">

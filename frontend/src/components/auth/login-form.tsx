@@ -61,19 +61,23 @@ export function LoginForm({
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-lg">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="m@example.com"
                   required
                   name="email"
-                  className="font-mono"
+                  className="font-mono !text-lg"
                 />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-lg">
+                    Password
+                  </Label>
                   <a
                     href="#"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
@@ -84,7 +88,7 @@ export function LoginForm({
                 <div className="relative">
                   <Input
                     id="password"
-                    className="pe-9 font-mono"
+                    className="pe-9 font-mono !text-lg"
                     placeholder="Password"
                     type={isVisible ? "text" : "password"}
                     required
@@ -106,7 +110,7 @@ export function LoginForm({
                   </button>
                 </div>
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full text-lg" size="lg">
                 Login
               </Button>
             </div>

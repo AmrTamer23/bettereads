@@ -16,6 +16,9 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
+import { Progress } from "../ui/progress";
+import clsx from "clsx";
+import { detectLanguage } from "@/lib/utils";
 
 const pageVariants = {
   initial: {
@@ -41,7 +44,14 @@ const pageVariants = {
 export default function ReadList({
   data,
 }: {
-  data: { title: string; coverURL: string; author: string; bookId: string }[];
+  data: {
+    title: string;
+    coverURL: string;
+    author: string;
+    bookId: string;
+    status: GoodreadsBook["status"];
+    progress: number;
+  }[];
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages] = useState(
@@ -67,23 +77,39 @@ export default function ReadList({
                 href={`/book/${book.bookId}`}
                 className="h-fit"
               >
-                <Card className="flex flex-col items-center justify-center">
+                <Card className="flex flex-col ">
                   <CardHeader>
-                    <CardTitle className="line-clamp-1 font-sans text-xl">
+                    <CardTitle
+                      className={clsx(
+                        "line-clamp-1 font-sans text-xl",
+                        detectLanguage(book.title) === "arabic" && "text-right"
+                      )}
+                    >
                       {book.title}
                     </CardTitle>
                     <CardDescription className="line-clamp-1">
                       {book.author}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex flex-col gap-4">
                     <Image
                       src={book.coverURL}
                       alt={book.title}
-                      className="!h-[26rem] object-cover rounded-xl border w-full"
+                      className="!h-[26rem] object-contain rounded-xl border w-fit mx-auto"
                       width={500}
                       height={300}
                     />
+                    {book.status === "READING" && (
+                      <div className="flex items-center gap-2">
+                        <Progress
+                          value={book.progress}
+                          className="w-full grow flex-1 "
+                        />
+                        <span className="text-sm font-medium font-mono">
+                          {Math.floor(book.progress)}%
+                        </span>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </Link>

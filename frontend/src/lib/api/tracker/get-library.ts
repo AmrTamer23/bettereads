@@ -10,11 +10,11 @@ interface Data {
   bookId: string;
   startDate: unknown;
   finishDate: unknown;
-  reviewid: unknown;
+  reviewid: string;
   title: string;
   coverURL: string;
   author: string;
-  status: string;
+  status: "TO_READ" | "READING" | "READ" | "TO_BUY";
   createdAt: string;
   updatedAt: string;
   progress: number;
