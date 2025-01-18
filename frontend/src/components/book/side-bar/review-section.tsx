@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,7 +13,10 @@ import { Star } from "lucide-react";
 import clsx from "clsx";
 
 interface ReviewSectionProps {
-  review: Review | null;
+  review: {
+    text: string;
+    rating: number;
+  } | null;
   newReview: { text: string; rating: number };
   setNewReview: (review: { text: string; rating: number }) => void;
   submitReview: () => void;
@@ -21,7 +24,6 @@ interface ReviewSectionProps {
 
 export const ReviewSection: FC<ReviewSectionProps> = ({
   review,
-  newReview,
   setNewReview,
   submitReview,
 }) => {
@@ -32,7 +34,7 @@ export const ReviewSection: FC<ReviewSectionProps> = ({
           <Star
             key={star}
             className={clsx(
-              "w-5 h-5",
+              "w-8 h-8",
               star <= rating ? "text-yellow-400 fill-current" : "text-gray-300"
             )}
           />
@@ -41,22 +43,27 @@ export const ReviewSection: FC<ReviewSectionProps> = ({
     );
   };
 
+  const [stars, setStars] = useState(0);
+  const [content, setContent] = useState("");
+
   return (
-    <div>
-      <h4 className="font-semibold mb-2">Your Review</h4>
+    <div className="flex flex-col gap-2">
+      <h4 className="font-semibold mb-2  text-xl">Your Review</h4>
       {review ? (
         <div className="flex flex-col gap-2">
-          <StarRating rating={review.stars} />
+          <StarRating rating={review.rating} />
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline">View Full Review</Button>
+              <Button variant="outline" className="w-fit">
+                View Full Review
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Your Review</DialogTitle>
               </DialogHeader>
               <div className="py-4">
-                <StarRating rating={review.stars} />
+                <StarRating rating={review.rating} />
                 <p className="mt-2">{review.text}</p>
               </div>
             </DialogContent>
@@ -65,7 +72,9 @@ export const ReviewSection: FC<ReviewSectionProps> = ({
       ) : (
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">Write a Review</Button>
+            <Button variant="outline" className="w-fit font-sans">
+              Write a Review
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -79,23 +88,16 @@ export const ReviewSection: FC<ReviewSectionProps> = ({
                 <label htmlFor="rating">Rating</label>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <Button
-                      key={star}
-                      variant="ghost"
-                      size="sm"
-                      onClick={() =>
-                        setNewReview({ ...newReview, rating: star })
-                      }
-                    >
+                    <div key={star} onClick={() => setStars(star)}>
                       <Star
                         className={clsx(
-                          "w-5 h-5",
-                          star <= newReview.rating
+                          "w-8 h-8",
+                          star <= stars
                             ? "text-yellow-400 fill-current"
                             : "text-gray-300"
                         )}
                       />
-                    </Button>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -103,17 +105,23 @@ export const ReviewSection: FC<ReviewSectionProps> = ({
                 <label htmlFor="review">Review</label>
                 <Textarea
                   id="review"
-                  value={newReview.text}
-                  onChange={(e) =>
-                    setNewReview({
-                      ...newReview,
-                      text: e.target.value,
-                    })
-                  }
+                  value={content}
+                  onChange={(e) => {
+                    setContent(e.target.value);
+                  }}
                   placeholder="Enter your review here..."
+                  className="h-48 resize-none !text-lg font-sans"
                 />
               </div>
-              <Button onClick={submitReview}>Submit Review</Button>
+              <Button
+                onClick={() => {
+                  setNewReview({ text: content, rating: stars });
+
+                  submitReview();
+                }}
+              >
+                Submit Review
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

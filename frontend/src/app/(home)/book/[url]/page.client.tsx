@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import clsx from "clsx";
 import { detectLanguage } from "@/lib/utils";
+import { MyBox } from "@/components/book/my-box";
 
 export default function ClientPage({
   params: { url },
@@ -105,7 +106,7 @@ export default function ClientPage({
                     </ScrollArea>
                   </div>
                 </div>
-                <div className=" w-full h-full bg-card p-6 rounded-lg shadow-md border"></div>
+                <MyBox />
               </div>
               <Sidebar
                 bookId={url}
