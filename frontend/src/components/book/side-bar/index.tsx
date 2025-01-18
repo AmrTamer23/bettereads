@@ -12,9 +12,7 @@ import { Button } from "@/components/ui/button";
 import { BookDetails } from "./book-details";
 import { LibraryStatus } from "./library-status";
 import { ProgressUpdate } from "./progress-update";
-import { QuotesDialog } from "./quotes-dialog";
-import { NotesDialog } from "./notes-dialog";
-import { ReviewSection } from "./review-section";
+
 import { addToLibrary, updateProgress } from "@/lib/api/tracker/add-to-library";
 import { getLibrary, LibraryData } from "@/lib/api/tracker/get-library";
 
@@ -48,24 +46,6 @@ export const Sidebar: FC<SidebarProps> = ({
     LibraryData["data"][0]["status"] | null
   >(null);
   const [progress, setProgress] = useState(0);
-  const [quotes, setQuotes] = useState<
-    {
-      id: string;
-      text: string;
-      page: number;
-    }[]
-  >([]);
-  const [notes, setNotes] = useState<
-    {
-      id: string;
-      text: string;
-      page: number;
-    }[]
-  >([]);
-  const [newQuote, setNewQuote] = useState({ text: "", page: 0 });
-  const [newNote, setNewNote] = useState({ text: "", page: 0 });
-  const [review, setReview] = useState<Review | null>(null);
-  const [newReview, setNewReview] = useState({ text: "", rating: 0 });
 
   const { toast } = useToast();
 
@@ -96,33 +76,6 @@ export const Sidebar: FC<SidebarProps> = ({
     }
   };
 
-  const addQuote = () => {
-    if (newQuote.text && newQuote.page > 0) {
-      setQuotes([...quotes, { ...newQuote, id: Date.now().toString() }]);
-      setNewQuote({ text: "", page: 0 });
-    }
-  };
-
-  const addNote = () => {
-    if (newNote.text && newNote.page > 0) {
-      setNotes([...notes, { ...newNote, id: Date.now().toString() }]);
-      setNewNote({ text: "", page: 0 });
-    }
-  };
-
-  const submitReview = () => {
-    if (newReview.text && newReview.rating > 0) {
-      setReview({
-        id: Date.now().toString(),
-        text: newReview.text,
-        stars: newReview.rating,
-      });
-      setNewReview({ text: "", rating: 0 });
-      // Here you would typically send the review to your backend
-      console.log("Review submitted:", newReview);
-    }
-  };
-
   const handleProgressUpdate = async () => {
     const newStatus = progress === 100 ? "READ" : "READING";
     const data = await updateProgress({
@@ -149,15 +102,6 @@ export const Sidebar: FC<SidebarProps> = ({
       if (book) {
         setInLibrary(book.status as LibraryData["data"][0]["status"]);
         setProgress(book.progress);
-        if (book.reviewid) {
-          // Assuming you have a way to fetch the review details
-          // For now, we'll just set a dummy review
-          setReview({
-            id: book.reviewid,
-            text: "This is a great book!",
-            stars: 4,
-          });
-        }
       }
     }
   }, [bookId, libraryData]);
@@ -184,32 +128,7 @@ export const Sidebar: FC<SidebarProps> = ({
                 handleProgressUpdate={handleProgressUpdate}
               />
             )}
-            {(inLibrary === "READ" || inLibrary === "READING") && (
-              <div className="flex gap-2">
-                <QuotesDialog
-                  quotes={quotes}
-                  inLibrary={inLibrary}
-                  newQuote={newQuote}
-                  setNewQuote={setNewQuote}
-                  addQuote={addQuote}
-                />
-                <NotesDialog
-                  notes={notes}
-                  inLibrary={inLibrary}
-                  newNote={newNote}
-                  setNewNote={setNewNote}
-                  addNote={addNote}
-                />
-              </div>
-            )}
-            {inLibrary === "READ" && (
-              <ReviewSection
-                review={review}
-                newReview={newReview}
-                setNewReview={setNewReview}
-                submitReview={submitReview}
-              />
-            )}
+
             <Button
               onClick={() => setInLibrary(null)}
               variant="outline"
