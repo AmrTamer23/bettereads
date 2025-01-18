@@ -17,6 +17,8 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
+import clsx from "clsx";
+import { detectLanguage } from "@/lib/utils";
 
 const pageVariants = {
   initial: {
@@ -75,9 +77,14 @@ export default function ReadList({
                 href={`/book/${book.bookId}`}
                 className="h-fit"
               >
-                <Card className="flex flex-col items-center justify-center">
+                <Card className="flex flex-col ">
                   <CardHeader>
-                    <CardTitle className="line-clamp-1 font-sans text-xl">
+                    <CardTitle
+                      className={clsx(
+                        "line-clamp-1 font-sans text-xl",
+                        detectLanguage(book.title) === "arabic" && "text-right"
+                      )}
+                    >
                       {book.title}
                     </CardTitle>
                     <CardDescription className="line-clamp-1">
@@ -88,7 +95,7 @@ export default function ReadList({
                     <Image
                       src={book.coverURL}
                       alt={book.title}
-                      className="!h-[26rem] object-cover rounded-xl border w-full"
+                      className="!h-[26rem] object-contain rounded-xl border w-fit mx-auto"
                       width={500}
                       height={300}
                     />

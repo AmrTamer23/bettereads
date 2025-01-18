@@ -1,6 +1,6 @@
 "use client";
 import { BookMarked } from "lucide-react";
-import ToReadList from "@/components/home/to-read-list";
+
 import { getLibrary } from "@/lib/api/tracker/get-library";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -51,10 +51,16 @@ export default function Home() {
                   : "Loading..."}
               </span>
             </div>
-            <ToReadList
+            <ReadList
               data={
                 isFetched
-                  ? libraryData!.filter((book) => book.status === "TO_READ")
+                  ? libraryData!
+                      .filter((book) => book.status === "TO_READ")
+                      .sort((a, b) => {
+                        if (a.progress > b.progress) return -1;
+                        if (a.progress < b.progress) return 1;
+                        return 0;
+                      })
                   : []
               }
             />

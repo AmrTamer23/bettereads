@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import clsx from "clsx";
+import { detectLanguage } from "@/lib/utils";
 
 export default function ClientPage({
   params: { url },
@@ -24,7 +26,7 @@ export default function ClientPage({
       {isFetched && (
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            <div className="flex flex-col lg:flex-row gap-2">
+            <div className="flex flex-col lg:flex-row gap-4">
               <div className="lg:w-2/3 flex flex-col ">
                 <div className="flex flex-col sm:flex-row gap-6 ">
                   <div className="sm:w-1/3  h-fit">
@@ -37,7 +39,13 @@ export default function ClientPage({
                     />
                   </div>
                   <div className="sm:w-2/3  h-[45dvh]">
-                    <h2 className="text-3xl font-bold mb-2 leading-normal">
+                    <h2
+                      className={clsx(
+                        "text-3xl font-semibold mb-2",
+                        detectLanguage(bookData!.title) === "arabic" &&
+                          "text-right"
+                      )}
+                    >
                       {bookData!.title}
                     </h2>
                     <p className="text-xl mb-2">
@@ -85,7 +93,13 @@ export default function ClientPage({
                       </span>
                     </div>{" "}
                     <ScrollArea className="h-96 w-full rounded-md  p-4 ">
-                      <p className="text-lg text-gray-700 dark:text-gray-50 font-sans">
+                      <p
+                        className={clsx(
+                          "text-lg text-gray-700 dark:text-gray-50 font-sans",
+                          detectLanguage(bookData!.desc) === "arabic" &&
+                            "text-right"
+                        )}
+                      >
                         {bookData!.desc}
                       </p>
                     </ScrollArea>
